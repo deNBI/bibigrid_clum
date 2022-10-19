@@ -18,16 +18,8 @@ This tutorial is a reworked/optimized version of the HandsOn session of the **GC
 The goal of this session is to setup a small HPC cluster consisting of 3 nodes  (1 master, 2 workers) using BiBiGrid with [Slurm](https://slurm.schedmd.com/quickstart.html) (worload manager),  [Network File System](https://linux.die.net/man/5/nfs) (allows file sharing between servers) and [Theia](https://theia-ide.org/docs/user_getting_started/)  (Web IDE). This tutorial targets users running BiBiGrid on de.NBI cloud.
 
 1. [Preperation](#preperation)
-    - [Premade Template](#premade-template)
-    - [Authentication](#authentication)
 2. [Configuration](#configuration)
-    - [Access](#access)
-	- [Hoch-/Tief-Stellen von Texten](#sub)
-3. [Links](#links)
-4. [Anker](#anker)
-	- [Anker definieren](#anker-definieren)
-	- [Text auf Anker verlinken](#anker-link)
-	- [Inhaltsverzeichnis erstellen](#inhalt)
+
 
 See our [de.NBI Wiki HandsOn](https://cloud.denbi.de/wiki/Tutorials/BiBiGrid/) for a more general tutorial. [[[[Remove if not needed]]]]
 
@@ -83,7 +75,7 @@ If multiple zones are shown, pick default. Set the template's `availabilityZone`
 
 #### sshUser
 
-The [sshUser](https://www.redhat.com/sysadmin/access-remote-systems-ssh) depends on your servers' images. Since we run on top of Ubuntu 22.04 the ssh-user is *ubuntu*. Set the template's `sshUser` key to `ubuntu`. We already did this for you.
+The [sshUser](https://www.redhat.com/sysadmin/access-remote-systems-ssh) depends on your server image. Since we run on top of Ubuntu 22.04 the ssh-user is *ubuntu*. Set the template's `sshUser` key to `ubuntu`. We already did this for you.
 
 ### Network
 
@@ -93,3 +85,62 @@ We prepared a subnet for you. Determine your subnet's name or id by running:
 openstack subnet list --os-cloud=openstack
 ```
 
+### Instances
+
+BiBiGrid needs to know `type` and `image` for each server. Since those are often identical for the workers, you can simply use the `count` key to indicate multiple workers with the same `type` and `image`.
+
+#### Image
+Images are virtual disks with a bootable operating system. Choosing an image means choosing the operating system of your server.
+
+Since [images](https://docs.openstack.org/image-guide/introduction.html) are often updated, you need to look up the current active image using:
+
+```
+openstack image list --os-cloud=openstack | grep active
+```
+
+Since we will use Ubuntu 22.04 you might as well use:
+
+```
+openstack image list --os-cloud=openstack | grep active | grep "Ubuntu 22.04"
+```
+
+Set the template's `image` key of all instances to the result's `ID` entry (the first column) of the Ubuntu 22.04 row. All servers will share the same image.
+
+#### Flavor
+
+Flavors are available hardware configurations.
+
+The following gives you a list of all flavors:
+
+```
+openstack flavor list --os-cloud=openstack
+```
+
+Set the template's `flavor` keys to flavors of your choice. You can use a different flavor for each instance.
+
+#### master
+
+```
+masterInstance:
+  type: de.NBI default
+  image: [ubuntu-22.04-image-id]
+```
+
+#### worker
+```
+workerInstances:
+  - type: de.NBI tiny
+    image: [ubuntu-22.04-image-id]
+    count: 2
+```
+
+The key `workerInstances` is a list. Each list element is a `worker group` with a `image` + `type` combination and a `count`.
+```
+workerInstances:
+  - type: de.NBI tiny
+    image: [ubuntu-22.04-image-id]
+    count: 1
+  - type: de.NBI default
+    image: [ubuntu-22.04-image-id]
+    count: 1
+```
