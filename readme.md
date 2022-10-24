@@ -29,7 +29,7 @@ See our [de.NBI Wiki HandsOn](https://cloud.denbi.de/wiki/Tutorials/BiBiGrid/) f
 
 Use the prefilled [configuration template](resources/bibigrid.yml) as a basis for your personal BiBiGrid configuration. Later in this tutorial you will use [OpenStackClient](https://pypi.org/project/python-openstackclient/) or access openstack dashboard manually to get all necessary configuration information from your project.
 
-Copy the configuration file to `~/.config/bibigrid/`.
+Copy the configuration template to `~/.config/bibigrid/`.
 
 ### Authentication
 
@@ -134,7 +134,7 @@ workerInstances:
     count: 2
 ```
 
-The key `workerInstances` is a list. Each list element is a `worker group` with a `image` + `type` combination and a `count`.
+The key `workerInstances` expects a list. Each list element is a `worker group` with a `image` + `type` combination and a `count`.
 ```
 workerInstances:
   - type: de.NBI tiny
@@ -144,3 +144,26 @@ workerInstances:
     image: [ubuntu-22.04-image-id]
     count: 1
 ```
+
+### Waiting for post-launch Service
+
+Some clouds run a post-launch service on every started instance. That might interrupt ansible. Thefore BiBiGrid needs to wait for your post-launch service to finish. For that BiBiGrid needs the service's name. Set the key `waitForService` to the service you would like to wait for. For Bielefeld this would be `de.NBI_Bielefeld_environment.service`. You should be able to find post-launch service names by taking a look at your location's [Computer Center Specific](https://cloud.denbi.de/wiki/) site - if a post-launch service exists for your location.
+
+### Check Your Configuration
+Run `./bibigrid.sh -i [path-to-bibigrid.yml] -ch -v` to check your configuration. `path-to-bibigrid.yml` is `bibigrid.yml` if you copied the configuration template to `~/.config/bibigrid/`. The commandline argument `-v` allows for greater verbosity which will make it easier for you to fix issues.
+
+## The Cluster
+`./bibigrid.sh -i [path-to-bibigrid.yml] -c` creates the cluster (executes only without error if check was successful). This will take up to 15 minutes.
+
+```
+[[CONTAINS EXAMPLE PRINT AFTER SUCCESSFULL CLUSTER CREATION]]
+```
+
+### List Running Cluster
+Copy the list command and execute it. You will notice that [[SPECIFIC]] if you require a less specific overview that shows only important information of all clusters call `./bibigrid.sh -i path-to-bibigrid.yml -l`
+
+### Cluster Login
+
+#### Login Using the Theia Web IDE
+
+#### Hello World, Hello BiBiGrid!
