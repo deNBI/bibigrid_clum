@@ -28,7 +28,7 @@ See our [de.NBI Wiki HandsOn](https://cloud.denbi.de/wiki/Tutorials/BiBiGrid/) f
 
 ### Premade Template
 
-Use the prefilled [configuration template](resources/bibigrid.yml) as a basis for your personal BiBiGrid configuration. Later in this tutorial you will use [OpenStackClient](https://pypi.org/project/python-openstackclient/) or access openstack dashboard manually to get all necessary configuration information from your project.
+Use the prefilled [configuration template](resources/bibigrid.yml) as a basis for your personal BiBiGrid configuration. Later in this tutorial you will use [OpenStackClient](https://pypi.org/project/python-openstackclient/) or access Openstack's dashboard manually to get all necessary configuration information from your project.
 
 Copy the configuration template to `~/.config/bibigrid/`.
 
@@ -53,6 +53,27 @@ In the future BiBiGrid will support more than just one cloud infrastructure. The
 ![Download](images/ac_screen3.png)
 
 If you have `OpenstackClient` installed and `openstack subnet list --os-cloud=openstack` runs without error, you are ready to proceed.
+
+### Virtual Environment
+
+A virtual environment is something that gives you everything you need to run specific programs without altering your installation.
+
+#### Creating a [Virtual Environment](https://docs.python.org/3/library/venv.html)
+
+`python3 -m venv ~/.venv/bibigrid`
+
+#### Sourcing Environments
+
+In order to actually use the virtual environment we need to [source](https://www.theunixschool.com/2012/04/what-is-sourcing-file.html) that environment:
+
+`source ~/.venv/bibigrid/bin/activate`
+
+Following [pip](https://manpages.ubuntu.com/manpages/bionic/en/man1/pip.1.html) installations will only affect the virtual environment. The virtual environment is only `sourced` in the terminal were you executed the source command. Other terminals are not affected.
+
+#### Fulfilling Requirements
+You will now install packages required by BiBiGrid within your newly created virtual environment. If you haven't `sourced` your environment yet, please go [back](#sourcing-environments). In order to install all BiBiGrid requirements we simply install from the given requirements file:
+
+`pip install -r requirements.txt`
 
 ## Configuration
 
@@ -210,7 +231,7 @@ sleep 10
 ```
 
 - Make `helloworld.sh` executable using [chmod](https://linux.die.net/man/1/chmod): `chmod u+x helloworld.sh`
-- Submit this script as an array job 50 times : `sbatch --array=1-50 --job-name=helloworld helloworld.sh`. The job `helloworld` runs now. It will take a while to finish, but we will now inspect some information while it runs.
+- Submit this script as an array job 50 times : `sbatch --array=1-50 --job-name=helloworld helloworld.sh`. The job `helloworld` runs now. It will take a while to finish, but you can already inspect some information while it runs.
 - The master will now power up worker nodes (as described by you in `bibigrid.yml`) to assist him with this job. Execute `sinfo` after a few seconds to see the current node status.
 - View information about all scheduled jobs by executing `squeue`. You will see your job `helloworld` there.
 - You can see `helloworld`'s output using [cat](https://linux.die.net/man/1/cat) `cat slurm-*.out`.
