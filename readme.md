@@ -1,8 +1,8 @@
-# Cloud User Meeting: BiBiGrid HandsOn
+# Cloud User Meeting: BiBiGrid Hands-on
 
-This tutorial is a reworked/optimized version of the HandsOn session of the **GCB 2019 in Heidelberg**.
+This tutorial is a reworked/optimized version of the Hands-on session of the **GCB 2019 in Heidelberg**.
 
-## Prerequisits
+## Prerequisites
 
 - Python 3 (required)
 - Openstack API access (required)
@@ -15,15 +15,16 @@ This tutorial is a reworked/optimized version of the HandsOn session of the **GC
 
 ## What will happen...
 
-The goal of this session is to setup a small HPC cluster consisting of 3 nodes  (1 master, 2 workers) using BiBiGrid with [Slurm](https://slurm.schedmd.com/quickstart.html) (worload manager),  [Network File System](https://linux.die.net/man/5/nfs) (allows file sharing between servers) and [Theia](https://theia-ide.org/docs/user_getting_started/)  (Web IDE). This tutorial targets users running BiBiGrid on de.NBI cloud.
+The goal of this session is to set up a small HPC cluster consisting of 3 nodes (1 master, 2 workers) using BiBiGrid with [Slurm](https://slurm.schedmd.com/quickstart.html) (workload manager), [Network File System](https://linux.die.net/man/5/nfs) (allows file sharing between servers) and [Theia](https://theia-ide.org/docs/user_getting_started/) (Web IDE). This tutorial targets users running BiBiGrid on de.NBI cloud.
 
-1. [Preperation](#preperation)
+1. [Preparation](#preparation)
 2. [Configuration](#configuration)
+3. [The Cluster](#the-cluster)
 
 
 See our [de.NBI Wiki HandsOn](https://cloud.denbi.de/wiki/Tutorials/BiBiGrid/) for a more general tutorial. [[[[Remove if not needed]]]]
 
-## Preperation
+## Preparation
 
 ### Premade Template
 
@@ -41,17 +42,23 @@ Don't use the input field secret. As you can see its input is not hidden. OpenSt
 
 ![Creation](images/ac_screen2.png)
 
-Safe the downloaded `clouds.yaml` under `~/.config/openstack/` **and** `~/.config/bibigrid/`. That will allow both OpenstackClient and BiBiGrid to access it.
+Safe the downloaded `clouds.yaml` under `~/.config/openstack/` **and** `~/.config/bibigrid/`. That will allow both `OpenstackClient` and BiBiGrid to access it.
+
+<details>
+<summary>Why not store BiBiGrids `clouds.yaml` in openstack and save the extra copy?</summary>
+
+In the future BiBiGrid will support more than just one cloud infrastructure. Therefore, using the `~/.config/openstack` folder would be a disadvantage later.
+</details>
 
 ![Download](images/ac_screen3.png)
 
-If you have OpenstackClient installed and `openstack subnet list --os-cloud=openstack` runs without error, you are ready to proceed.
+If you have `OpenstackClient` installed and `openstack subnet list --os-cloud=openstack` runs without error, you are ready to proceed.
 
 ## Configuration
 
 ### Access information
 
-BiBiGrid needs to know where to look for the cloud and later as which user to access the servers. Therefore you need to set three keys: [region](https://docs.openstack.org/python-openstackclient/rocky/cli/command-objects/region.html), [availabilityZone](https://docs.openstack.org/nova/latest/admin/availability-zones.html) and [sshUser](https://www.redhat.com/sysadmin/access-remote-systems-ssh). Following the next steps you will be able to update the [premade template](#premade-template).
+BiBiGrid must know which cloud authentication information to use and later as which user it can access the servers. Therefore, you need to set three keys: [region](https://docs.openstack.org/python-openstackclient/rocky/cli/command-objects/region.html), [availabilityZone](https://docs.openstack.org/nova/latest/admin/availability-zones.html) and [sshUser](https://www.redhat.com/sysadmin/access-remote-systems-ssh). Following the next steps you will be able to update the [premade template](#premade-template).
 
 #### region
 
@@ -75,15 +82,17 @@ If multiple zones are shown, pick default. Set the template's `availabilityZone`
 
 #### sshUser
 
-The [sshUser](https://www.redhat.com/sysadmin/access-remote-systems-ssh) depends on your server image. Since we run on top of Ubuntu 22.04 the ssh-user is *ubuntu*. Set the template's `sshUser` key to `ubuntu`. We already did this for you.
+The [sshUser](https://www.redhat.com/sysadmin/access-remote-systems-ssh) depends on your server image. Since we run on top of Ubuntu 22.04 the ssh-user is `ubuntu`. Usually you would now set the template's `sshUser` key to `ubuntu`, but we've already done that for you.
 
 ### Network
 
-We prepared a subnet for you. Determine your subnet's name or id by running:
+We created a subnet for this workshop. Determine your subnet's name or ID by running:
 
 ```
 openstack subnet list --os-cloud=openstack
 ```
+
+Set the template's `subnet` key to the result's `Name` key.
 
 ### Instances
 
@@ -147,34 +156,67 @@ workerInstances:
 
 ### Waiting for post-launch Service
 
-Some clouds run a post-launch service on every started instance. That might interrupt ansible. Thefore BiBiGrid needs to wait for your post-launch service to finish. For that BiBiGrid needs the service's name. Set the key `waitForService` to the service you would like to wait for. For Bielefeld this would be `de.NBI_Bielefeld_environment.service`. You should be able to find post-launch service names by taking a look at your location's [Computer Center Specific](https://cloud.denbi.de/wiki/) site - if a post-launch service exists for your location.
+Some clouds run a post-launch service on every started instance. That might interrupt Ansible. Therefore, BiBiGrid needs to wait for your post-launch service to finish. For that BiBiGrid needs the service's name. Set the key `waitForService` to the service you would like to wait for. For Bielefeld this would be `de.NBI_Bielefeld_environment.service`. You should be able to find post-launch service names by taking a look at your location's [Computer Center Specific](https://cloud.denbi.de/wiki/) site - if a post-launch service exists for your location.
 
 ### Check Your Configuration
-Run `./bibigrid.sh -i [path-to-bibigrid.yml] -ch -v` to check your configuration. `path-to-bibigrid.yml` is `bibigrid.yml` if you copied the configuration template to `~/.config/bibigrid/`. The commandline argument `-v` allows for greater verbosity which will make it easier for you to fix issues.
+Run `./bibigrid.sh -i [path-to-bibigrid.yml] -ch -v` to check your configuration. `path-to-bibigrid.yml` is `bibigrid.yml` if you copied the configuration template to `~/.config/bibigrid/`. The command line argument `-v` allows for greater verbosity which will make it easier for you to fix issues.
 
 ## The Cluster
-`./bibigrid.sh -i bibigrid.yml -c` creates the cluster (executes only without error if check was successful). This will take up to 15 minutes.
-
-```
-[[CONTAINS EXAMPLE PRINT AFTER SUCCESSFULL CLUSTER CREATION]]
-```
+`./bibigrid.sh -i bibigrid.yml -c -v` creates the cluster with a more verbose output. Cluster creation will take up to 15 minutes.
 
 ### List Running Cluster
-Since it is possible to start more than one cluster at once, it can be helpful to list all running clusters:
+Since several clusters can be running simultaneously, it can be useful to list all running clusters:
 
 Execute `./bibigrid.sh -i bibigrid.yml -l`. You will receive a general overview over all clusters started in your project.
 
-### Cluster Login
+### Cluster SSH Connection
 
-#### Login Using the Theia Web IDE
-Execute `./bibigrid.sh -i bibigrid.yml -ide -cid [cluster-id]` to connect to theia. You may even use `./bibigrid.sh -i bibigrid.yml -ide` since BiBiGrid will attempt to connect to the last created cluster if no cluster-id is given.
+After a successful setup, BiBiGrid will print some information. For example:
 
-[Theia Web IDE](https://www.theia-ide.org/) allows you to work on your cloud instances more easily. Let's see how Theia works together with BiBiGrid. 
+```
+Cluster 6jh83w0n3vsip90 with master 123.45.67.890 up and running!
+SSH: ssh -i '~/.bibigrid/tempKey_bibi-6jh83w0n3vsip90' ubuntu@123.45.67.890
+Terminate cluster: ./bibigrid.sh -i 'bibigrid.yml' -t -cid 6jh83w0n3vsip90
+Detailed cluster info: ./bibigrid.sh -i 'bibigrid.yml' -l -cid 6jh83w0n3vsip90
+```
+
+You can now establish an SSH connection to your cluster's master by executing the `SSH` line of your `create`'s output: `ssh -i '~/.bibigrid/tempKey_bibi-6jh83w0n3vsip90' ubuntu@123.45.67.890`. But make sure to use the one generated for you by BiBiGrid since cluster-id (here `6jh83w0n3vsip90`), key name (here `~/.bibigrid/tempKey_bibi-6jh83w0n3vsip90`) and user@IP (here `ubuntu@123.45.67.890`) can (and most likely will) differ on every run. Run `sinfo` after logging in. You will see only the master in Slurm's list. That is correct. You have successfully logged in.
+
+However, doing everything from a terminal can be quite bothersome. That's were Theia comes in.
+
+### Using Theia Web IDE
+
+[Theia Web IDE's](https://www.theia-ide.org/) many features make it easier to work on your cloud instances. Take a look:
 
 ![Theia](images/theia.png)
 
-If the theia option is enabled in the configuration, theia will be run as systemd service on localhost. You can connect to 
+Execute `./bibigrid.sh -i bibigrid.yml -ide -cid [cluster-id]` to connect to Theia. You may even use `./bibigrid.sh -i bibigrid.yml -ide` since BiBiGrid will attempt to connect to your last created cluster if no cluster-id is given. Theia will be run as `systemd service` on localhost. A Theia IDE tab will be opened in your browser.
 
-`java -jar bibigrid-openstack-2.0.8.jar --ide <clusterid>`
+
 
 #### Hello World, Hello BiBiGrid!
+
+After successfully connecting to Theia IDE, let's start with a "hello world".
+
+- Open a terminal and change into the spool directory. 
+`cd /vol/spool`
+
+- Create a new shell script `helloworld.sh`:
+
+```
+#!/bin/bash
+echo Hello from $(hostname) !
+sleep 10
+```
+
+- Make `helloworld.sh` executable using [chmod](https://linux.die.net/man/1/chmod): `chmod u+x helloworld.sh`
+- Submit this script as an array job 50 times : `sbatch --array=1-50 --job-name=helloworld helloworld.sh`. The job `helloworld` runs now. It will take a while to finish, but we will now inspect some information while it runs.
+- The master will now power up worker nodes (as described by you in `bibigrid.yml`) to assist him with this job. Execute `sinfo` after a few seconds to see the current node status.
+- View information about all scheduled jobs by executing `squeue`. You will see your job `helloworld` there.
+- You can see `helloworld`'s output using [cat](https://linux.die.net/man/1/cat) `cat slurm-*.out`.
+
+## Terminate a cluster
+
+Terminating a running cluster is quite simple. Execute this on your local machine in the repository folder:
+
+`./bibigrid.sh -i bibigrid.yml -t -cid [cluster-id]` or - you probably already guessed it - `./bibigrid.sh -i bibigrid.yml -t`, which also does the trick since BiBiGrid will fall back on your last created cluster if no cluster-id is specified.
