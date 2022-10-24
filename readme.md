@@ -217,6 +217,4 @@ sleep 10
 
 ## Terminate a cluster
 
-Terminating a running cluster is quite simple. Execute this on your local machine in the repository folder:
-
-`./bibigrid.sh -i bibigrid.yml -t -cid [cluster-id]` or - you probably already guessed it - `./bibigrid.sh -i bibigrid.yml -t`, which also does the trick since BiBiGrid will fall back on your last created cluster if no cluster-id is specified.
+Terminating a running cluster is quite simple. Execute `./bibigrid.sh -i bibigrid.yml -t -cid [cluster-id]`. You probably already guessed it, `./bibigrid.sh -i bibigrid.yml -t` also does the trick, since BiBiGrid will fall back on your last created cluster if no cluster-id is specified.
