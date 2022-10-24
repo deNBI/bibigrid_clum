@@ -153,17 +153,28 @@ Some clouds run a post-launch service on every started instance. That might inte
 Run `./bibigrid.sh -i [path-to-bibigrid.yml] -ch -v` to check your configuration. `path-to-bibigrid.yml` is `bibigrid.yml` if you copied the configuration template to `~/.config/bibigrid/`. The commandline argument `-v` allows for greater verbosity which will make it easier for you to fix issues.
 
 ## The Cluster
-`./bibigrid.sh -i [path-to-bibigrid.yml] -c` creates the cluster (executes only without error if check was successful). This will take up to 15 minutes.
+`./bibigrid.sh -i bibigrid.yml -c` creates the cluster (executes only without error if check was successful). This will take up to 15 minutes.
 
 ```
 [[CONTAINS EXAMPLE PRINT AFTER SUCCESSFULL CLUSTER CREATION]]
 ```
 
 ### List Running Cluster
-Copy the list command and execute it. You will notice that [[SPECIFIC]] if you require a less specific overview that shows only important information of all clusters call `./bibigrid.sh -i path-to-bibigrid.yml -l`
+Since it is possible to start more than one cluster at once, it can be helpful to list all running clusters:
+
+Execute `./bibigrid.sh -i bibigrid.yml -l`. You will receive a general overview over all clusters started in your project.
 
 ### Cluster Login
 
 #### Login Using the Theia Web IDE
+Execute `./bibigrid.sh -i bibigrid.yml -ide -cid [cluster-id]` to connect to theia. You may even use `./bibigrid.sh -i bibigrid.yml -ide` since BiBiGrid will attempt to connect to the last created cluster if no cluster-id is given.
+
+[Theia Web IDE](https://www.theia-ide.org/) allows you to work on your cloud instances more easily. Let's see how Theia works together with BiBiGrid. 
+
+![Theia](images/theia.png)
+
+If the theia option is enabled in the configuration, theia will be run as systemd service on localhost. You can connect to 
+
+`java -jar bibigrid-openstack-2.0.8.jar --ide <clusterid>`
 
 #### Hello World, Hello BiBiGrid!
