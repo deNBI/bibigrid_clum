@@ -1,17 +1,26 @@
 # Cloud User Meeting: BiBiGrid Hands-on
 
-This tutorial is a reworked/optimized version of the Hands-on session of the **GCB 2019 in Heidelberg**.
+This tutorial is a reworked/optimized version of the Hands-on session of the **GCB 2019 in Heidelberg**
+based on the latest release of BiBiGrid
 
 ## Prerequisites
 
-- Python 3 (required)
-- Openstack API access (required)
+- System base on Linux or OSX or Windows Subsystem for Linux
+- required software packages 
+  - Python > 3.6  
+  - git (required)
+  - openssh 
+- Openstack API access 
 - [OpenstackClient](https://pypi.org/project/python-openstackclient/) (recommended)
-- Linux (recommended)
 
 ## Download BiBiGrid
 
-[[[Enter Link for BiBiGrid here]]]
+
+```shell
+git clone https://github.com/BiBiServ/bibi....
+```
+_ToDO: Replace URL_
+
 
 ## What will happen...
 
