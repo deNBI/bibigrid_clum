@@ -1,0 +1,59 @@
+  # See https://cloud.denbi.de/wiki/Tutorials/BiBiGrid/ (after update)
+  # First configuration will be used for general cluster information and must include the master.
+  # All other configurations mustn't include another master, but exactly one vpnWorker instead (keys like master).
+
+- infrastructure: openstack # former mode.
+  cloud: clum2022 # name of clouds.yaml entry
+
+  # -- BEGIN: GENERAL CLUSTER INFORMATION --
+  ## sshPublicKeyFiles listed here will be added to access the cluster. A temporary key is created by bibigrid itself.
+  #sshPublicKeyFiles:
+  #  -  [add path to your ssh key]
+
+  ## Volumes and snapshots that will be mounted to master
+  #masterMounts:
+  #  - [mount one]
+
+  ## Uncomment if you don't want assign a public ip to the master; for internal cluster.
+  useMasterWithPublicIp: yes 
+
+  # Other keys
+  # localFS: False
+  # localDNSlookup: False
+  zabbix: True
+  nfs: True
+  ide: True
+
+  ## Uncomment if you want use the master instance as compute node
+  useMasterAsCompute: yes
+
+  # master configuration
+  masterInstance:
+    type: de.NBI mini
+    image: Ubuntu 22.04 LTS (2022-10-14)
+
+  # -- END: GENERAL CLUSTER INFORMATION --
+
+  # worker configuration
+  workerInstances:
+    - type: de.NBI small + ephemeral
+      image: Ubuntu 22.04 LTS (2022-10-14)
+      count: 2
+
+  # Depends on cloud image
+  sshUser: ubuntu
+
+  # Depends on cloud site:
+  region: Bielefeld
+
+  # Depends on cloud site:
+  availabilityZone: default
+
+  # Depends on your project and cloud site
+  subnet: [add your network here]
+
+
+  waitForService:
+    - de.NBI_Bielefeld_environment.service
+
+
