@@ -3,7 +3,7 @@
   # All other configurations mustn't include another master, but exactly one vpnWorker instead (keys like master).
 
 - infrastructure: openstack # former mode.
-  cloud: clum2022 # name of clouds.yaml entry
+  cloud: openstack # name of clouds.yaml entry
 
   # -- BEGIN: GENERAL CLUSTER INFORMATION --
   ## sshPublicKeyFiles listed here will be added to access the cluster. A temporary key is created by bibigrid itself.
@@ -15,7 +15,7 @@
   #  - [mount one]
 
   ## Uncomment if you don't want assign a public ip to the master; for internal cluster.
-  useMasterWithPublicIp: yes 
+  useMasterWithPublicIp: False
 
   # Other keys
   # localFS: False
@@ -25,7 +25,7 @@
   ide: True
 
   ## Uncomment if you want use the master instance as compute node
-  useMasterAsCompute: yes
+  useMasterAsCompute: True
 
   # master configuration
   masterInstance:
@@ -53,7 +53,7 @@
   subnet: [add your network here]
 
 
-  waitForService:
+  waitForServices:
     - de.NBI_Bielefeld_environment.service
 
 
