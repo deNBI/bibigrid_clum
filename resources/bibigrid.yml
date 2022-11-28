@@ -53,6 +53,7 @@
   subnet: [add your network here]
 
 
-  waitForService: de.NBI_Bielefeld_environment.service
+  waitForService:
+    - de.NBI_Bielefeld_environment.service
 
 

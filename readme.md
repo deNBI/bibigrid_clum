@@ -126,12 +126,15 @@ Set the template's `subnet` key to the result's `Name` key.
 
 ### Instances
 
-BiBiGrid needs to know `type` and `image` for each server. Since those are often identical for the workers, you can simply use the `count` key to indicate multiple workers with the same `type` and `image`.
+BiBiGrid needs to know `type` and `image` for each server. Since those are often identical for the workers, 
+you can simply use the `count` key to indicate multiple workers with the same `type` and `image`.
 
 #### Image
-Images are virtual disks with a bootable operating system. Choosing an image means choosing the operating system of your server.
+Images are virtual disks with a bootable operating system. Choosing an image means choosing the operating 
+system of your server.
 
-Since [images](https://docs.openstack.org/image-guide/introduction.html) are often updated, you need to look up the current active image using:
+Since [images](https://docs.openstack.org/image-guide/introduction.html) are often updated, you need to 
+look up the current active image using:
 
 ```
 openstack image list --os-cloud=openstack | grep active
@@ -143,7 +146,8 @@ Since we will use Ubuntu 22.04 you might as well use:
 openstack image list --os-cloud=openstack | grep active | grep "Ubuntu 22.04"
 ```
 
-Set the template's `image` key of all instances to the result's `ID` entry (the first column) of the Ubuntu 22.04 row. All servers will share the same image.
+Set the template's `image` key of all instances to the result's `ID`  **or** `NAME` entry of the Ubuntu 22.04 row. 
+All servers will share the same image.
 
 #### Flavor
 
@@ -155,21 +159,22 @@ The following gives you a list of all flavors:
 openstack flavor list --os-cloud=openstack
 ```
 
-Set the template's `flavor` keys to flavors of your choice. You can use a different flavor for each instance.
+Set the template's `flavor` keys  (`ID` or `NAME`) to flavors of your choice. You can use a different flavor 
+for the master and each worker-group.
 
 #### master
 
 ```
 masterInstance:
   type: de.NBI default
-  image: [ubuntu-22.04-image-id]
+  image: [ubuntu-22.04-image-name] or [ubuntu-22.04-image-id]
 ```
 
 #### worker
 ```
 workerInstances:
   - type: de.NBI tiny
-    image: [ubuntu-22.04-image-id]
+    image: [ubuntu-22.04-image-name] or [ubuntu-22.04-image-id]
     count: 2
 ```
 
@@ -177,27 +182,43 @@ The key `workerInstances` expects a list. Each list element is a `worker group` 
 ```
 workerInstances:
   - type: de.NBI tiny
-    image: [ubuntu-22.04-image-id]
+    image: [ubuntu-22.04-image-name] or [ubuntu-22.04-image-id]
     count: 1
   - type: de.NBI default
-    image: [ubuntu-22.04-image-id]
+    image: [ubuntu-22.04-image-name] or [ubuntu-22.04-image-id]
     count: 1
 ```
 
 ### Waiting for post-launch Service
 
-Some clouds run a post-launch service on every started instance. That might interrupt Ansible. Therefore, BiBiGrid needs to wait for your post-launch service to finish. For that BiBiGrid needs the service's name. Set the key `waitForService` to the service you would like to wait for. For Bielefeld this would be `de.NBI_Bielefeld_environment.service`. You should be able to find post-launch service names by taking a look at your location's [Computer Center Specific](https://cloud.denbi.de/wiki/) site - if a post-launch service exists for your location.
+Some clouds run one or more post-launch services on every started instance, to finish the initialization after an 
+instance is available (e.g. to configure local proxy settings or local available repositories). That might interrupt 
+Ansible. Therefore, BiBiGrid needs to wait for your post-launch service(s) to finish. For that BiBiGrid needs the 
+service's name. Set the key `waitForService` to the list of services you would like to wait for. For Bielefeld 
+this would be `de.NBI_Bielefeld_environment.service`. You should be able to find post-launch service names by 
+taking a look at your location's [Computer Center Specific](https://cloud.denbi.de/wiki/) site - if 
+post-launch services exist for your location.
+
+```yaml
+  waitForService: 
+    - de.NBI_Bielefeld_environment.service
+```
+
 
 ### Check Your Configuration
-Run `./bibigrid.sh -i [path-to-bibigrid.yml] -ch -v` to check your configuration. `path-to-bibigrid.yml` is `bibigrid.yml` if you copied the configuration template to `~/.config/bibigrid/`. The command line argument `-v` allows for greater verbosity which will make it easier for you to fix issues.
+Run `./bibigrid.sh -i [path-to-bibigrid.yml] -ch -v` to check your configuration. `path-to-bibigrid.yml` is 
+`bibigrid.yml` if you copied the configuration template to `~/.config/bibigrid/`. The command line argument 
+`-v` allows for greater verbosity which will make it easier for you to fix issues.
 
 ## The Cluster
-`./bibigrid.sh -i bibigrid.yml -c -v` creates the cluster with a more verbose output. Cluster creation will take up to 15 minutes.
+`./bibigrid.sh -i bibigrid.yml -c -v` creates the cluster with a more verbose output. Cluster creation time 
+depends on the chosen flavor and the overall load of the cloud and will take up to 15 minutes.
 
 ### List Running Cluster
 Since several clusters can be running simultaneously, it can be useful to list all running clusters:
 
-Execute `./bibigrid.sh -i bibigrid.yml -l`. You will receive a general overview over all clusters started in your project.
+Execute `./bibigrid.sh -i bibigrid.yml -l`. You will receive a general overview over all clusters started 
+in your project.
 
 ### Cluster SSH Connection
 
@@ -210,7 +231,19 @@ Terminate cluster: ./bibigrid.sh -i 'bibigrid.yml' -t -cid 6jh83w0n3vsip90
 Detailed cluster info: ./bibigrid.sh -i 'bibigrid.yml' -l -cid 6jh83w0n3vsip90
 ```
 
-You can now establish an SSH connection to your cluster's master by executing the `SSH` line of your `create`'s output: `ssh -i '~/.bibigrid/tempKey_bibi-6jh83w0n3vsip90' ubuntu@123.45.67.890`. But make sure to use the one generated for you by BiBiGrid since cluster-id (here `6jh83w0n3vsip90`), key name (here `~/.bibigrid/tempKey_bibi-6jh83w0n3vsip90`) and user@IP (here `ubuntu@123.45.67.890`) can (and most likely will) differ on every run. Run `sinfo` after logging in. You will see only the master in Slurm's list. That is correct. You have successfully logged in.
+You can now establish an SSH connection to your cluster's master by executing the `SSH` line of your `create`'s 
+output: 
+```
+ssh -i '~/.bibigrid/tempKey_bibi-6jh83w0n3vsip90' ubuntu@123.45.67.890`. 
+```
+But make sure to use the one generated for you by BiBiGrid since 
+
+- cluster-id (here `6jh83w0n3vsip90`), 
+- key name (here `~/.bibigrid/tempKey_bibi-6jh83w0n3vsip90`) 
+- user@IP (here `ubuntu@123.45.67.890`) 
+
+can (and most likely will) differ on every run. Run `sinfo` after logging in. You will see only the master in 
+Slurm's list. That is correct. You have successfully logged in.
 
 However, doing everything from a terminal can be quite bothersome. That's were Theia comes in.
 
@@ -220,9 +253,18 @@ However, doing everything from a terminal can be quite bothersome. That's were T
 
 ![Theia](images/theia.png)
 
-Execute `./bibigrid.sh -i bibigrid.yml -ide -cid [cluster-id]` to connect to Theia. You may even use `./bibigrid.sh -i bibigrid.yml -ide` since BiBiGrid will attempt to connect to your last created cluster if no cluster-id is given. Theia will be run as `systemd service` on localhost. A Theia IDE tab will be opened in your browser.
 
+When enabled, Theia Web IDE is configured to listen on localhost port 8181 on the master instance. Since this address 
+is not directly available you have to forward it to your machine using ssh. 
 
+Execute 
+
+```
+ssh -i '~/.bibigrid/tempKey_bibi-6jh83w0n3vsip90' -L 8181:localhost:8181 ubuntu@123.45.67.890`. 
+```
+
+to forward localhost:8181 (on the master instance) over the master public ip to your local machine.
+Open a browser and enter `http://localhost:8181` to access the WEB UI of Theia.
 
 #### Hello World, Hello BiBiGrid!
 
