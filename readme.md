@@ -37,7 +37,9 @@ See our [de.NBI Wiki HandsOn](https://cloud.denbi.de/wiki/Tutorials/BiBiGrid/) f
 
 ### Premade Template
 
-Use the prefilled [configuration template](resources/bibigrid.yml) as a basis for your personal BiBiGrid configuration. Later in this tutorial you will use [OpenStackClient](https://pypi.org/project/python-openstackclient/) or access Openstack's dashboard manually to get all necessary configuration information from your project.
+Use the prefilled [configuration template](resources/bibigrid.yml) as a basis for your personal BiBiGrid configuration. 
+Later in this tutorial you will use [OpenStackClient](https://pypi.org/project/python-openstackclient/) or access 
+Openstack's dashboard manually to get all necessary configuration information from your project.
 
 Copy the configuration template to `~/.config/bibigrid/`.
 
@@ -289,4 +291,6 @@ sleep 10
 
 ## Terminate a cluster
 
-Terminating a running cluster is quite simple. Execute `./bibigrid.sh -i bibigrid.yml -t -cid [cluster-id]`. You probably already guessed it, `./bibigrid.sh -i bibigrid.yml -t` also does the trick, since BiBiGrid will fall back on your last created cluster if no cluster-id is specified.
+Terminating a running cluster is quite simple. Execute `./bibigrid.sh -i bibigrid.yml -t -cid [cluster-id]`. 
+You probably already guessed it, `./bibigrid.sh -i bibigrid.yml -t` also does the trick, since BiBiGrid will fall 
+back on your last created cluster if no cluster-id is specified.
