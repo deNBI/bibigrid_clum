@@ -196,13 +196,13 @@ workerInstances:
 Some clouds run one or more post-launch services on every started instance, to finish the initialization after an 
 instance is available (e.g. to configure local proxy settings or local available repositories). That might interrupt 
 Ansible. Therefore, BiBiGrid needs to wait for your post-launch service(s) to finish. For that BiBiGrid needs the 
-service's name. Set the key `waitForService` to the list of services you would like to wait for. For Bielefeld 
+services' names. Set the key `waitForServices` to the list of services you would like to wait for. For Bielefeld 
 this would be `de.NBI_Bielefeld_environment.service`. You should be able to find post-launch service names by 
 taking a look at your location's [Computer Center Specific](https://cloud.denbi.de/wiki/) site - if 
 post-launch services exist for your location.
 
 ```yaml
-  waitForService: 
+  waitForServices: 
     - de.NBI_Bielefeld_environment.service
 ```
 
@@ -241,13 +241,13 @@ ssh -i '~/.bibigrid/tempKey_bibi-6jh83w0n3vsip90' ubuntu@123.45.67.890`.
 But make sure to use the one generated for you by BiBiGrid since 
 
 - cluster-id (here `6jh83w0n3vsip90`), 
-- key name (here `~/.bibigrid/tempKey_bibi-6jh83w0n3vsip90`) 
+- key name (here `~/.config/bibigrid/keys/tempKey_bibi-6jh83w0n3vsip90`) 
 - user@IP (here `ubuntu@123.45.67.890`) 
 
 can (and most likely will) differ on every run. Run `sinfo` after logging in. You will see only the master in 
 Slurm's list. That is correct. You have successfully logged in.
 
-However, doing everything from a terminal can be quite bothersome. That's were Theia comes in.
+However, doing everything on the running cluster from a terminal can be quite bothersome. That's were Theia comes in.
 
 ### Using Theia Web IDE
 
