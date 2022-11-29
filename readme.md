@@ -262,11 +262,10 @@ is not directly available you have to forward it to your machine using ssh.
 Execute 
 
 ```
-ssh -i '~/.bibigrid/tempKey_bibi-6jh83w0n3vsip90' -L 8181:localhost:8181 ubuntu@123.45.67.890`. 
+./bibigrid.sh -i bibigrid.yml -ide -cid [cluster-id]
 ```
 
-to forward localhost:8181 (on the master instance) over the master public ip to your local machine.
-Open a browser and enter `http://localhost:8181` to access the WEB UI of Theia.
+to connect to Theia. You may even use `./bibigrid.sh -i bibigrid.yml -ide` since BiBiGrid will attempt to connect to your last created cluster if no cluster-id is given. Theia will be run as `systemd service` on localhost. A Theia IDE tab will be opened in your browser.
 
 #### Hello World, Hello BiBiGrid!
 
