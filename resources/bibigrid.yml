@@ -24,8 +24,7 @@
   nfs: True
   ide: True
 
-  ## Uncomment if you want use the master instance as compute node
-  useMasterAsCompute: True
+  useMasterAsCompute: False
 
   # master configuration
   masterInstance:
@@ -36,7 +35,7 @@
 
   # worker configuration
   workerInstances:
-    - type: de.NBI small + ephemeral
+    - type: de.NBI large + ephemeral
       image: Ubuntu 22.04 LTS (2022-10-14)
       count: 2
 
@@ -52,8 +51,12 @@
   # Depends on your project and cloud site
   subnet: [add your network here]
 
-
   waitForServices:
     - de.NBI_Bielefeld_environment.service
+
+  # Suspend worker nodes after 9 Hours
+  slurmConf:
+    elastic_scheduling:
+      SuspendTime: 32400
 
 
