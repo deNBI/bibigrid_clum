@@ -14,13 +14,18 @@ based on the latest release of BiBiGrid
 - [OpenstackClient](https://pypi.org/project/python-openstackclient/) (recommended)
 
 ## Download BiBiGrid
+```shell
+git clone https://gitlab.ub.uni-bielefeld.de/bibiserv/bibigrid/bibigrid2.git
+cd bibigrid2
+```
 
+The following steps assume that you are inside of the bibigrid2 folder. It should contain:
 
 ```shell
-git clone https://github.com/BiBiServ/bibi....
+$ ls
+bibigrid2    bibigrid.yml   README.md         resources
+bibigrid.sh  documentation  requirements.txt  tests
 ```
-_ToDO: Replace URL_
-
 
 ## What will happen...
 
@@ -29,9 +34,6 @@ The goal of this session is to set up a small HPC cluster consisting of 3 nodes 
 1. [Preparation](#preparation)
 2. [Configuration](#configuration)
 3. [The Cluster](#the-cluster)
-
-
-See our [de.NBI Wiki HandsOn](https://cloud.denbi.de/wiki/Tutorials/BiBiGrid/) for a more general tutorial. [[[[Remove if not needed]]]]
 
 ## Preparation
 
@@ -138,13 +140,13 @@ system of your server.
 Since [images](https://docs.openstack.org/image-guide/introduction.html) are often updated, you need to 
 look up the current active image using:
 
-```
+```shell
 openstack image list --os-cloud=openstack | grep active
 ```
 
 Since we will use Ubuntu 22.04 you might as well use:
 
-```
+```shell
 openstack image list --os-cloud=openstack | grep active | grep "Ubuntu 22.04"
 ```
 
@@ -157,7 +159,7 @@ Flavors are available hardware configurations.
 
 The following gives you a list of all flavors:
 
-```
+```shell
 openstack flavor list --os-cloud=openstack
 ```
 
@@ -166,14 +168,14 @@ for the master and each worker-group.
 
 #### master
 
-```
+```shell
 masterInstance:
   type: de.NBI default
   image: [ubuntu-22.04-image-name] or [ubuntu-22.04-image-id]
 ```
 
 #### worker
-```
+```shell
 workerInstances:
   - type: de.NBI tiny
     image: [ubuntu-22.04-image-name] or [ubuntu-22.04-image-id]
@@ -181,7 +183,7 @@ workerInstances:
 ```
 
 The key `workerInstances` expects a list. Each list element is a `worker group` with a `image` + `type` combination and a `count`.
-```
+```shell
 workerInstances:
   - type: de.NBI tiny
     image: [ubuntu-22.04-image-name] or [ubuntu-22.04-image-id]
@@ -235,7 +237,7 @@ Detailed cluster info: ./bibigrid.sh -i 'bibigrid.yml' -l -cid 6jh83w0n3vsip90
 
 You can now establish an SSH connection to your cluster's master by executing the `SSH` line of your `create`'s 
 output: 
-```
+```shell
 ssh -i '~/.bibigrid/tempKey_bibi-6jh83w0n3vsip90' ubuntu@123.45.67.890`. 
 ```
 But make sure to use the one generated for you by BiBiGrid since 
@@ -261,7 +263,7 @@ is not directly available you have to forward it to your machine using ssh.
 
 Execute 
 
-```
+```shell
 ./bibigrid.sh -i bibigrid.yml -ide -cid [cluster-id]
 ```
 
@@ -276,7 +278,7 @@ After successfully connecting to Theia IDE, let's start with a "hello world".
 
 - Create a new shell script `helloworld.sh`:
 
-```
+```shell
 #!/bin/bash
 echo Hello from $(hostname) !
 sleep 10
