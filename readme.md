@@ -39,7 +39,7 @@ The goal of this session is to set up a small HPC cluster consisting of 3 nodes 
 
 ### Premade Template
 
-Use the prefilled [configuration template](resources/bibigrid.yml) as a basis for your personal BiBiGrid configuration. 
+Use the prefilled configuration template [bibigrid_clum2022/resources/bibigrid.yml](resources/bibigrid.yml) as a basis for your personal BiBiGrid configuration. 
 Later in this tutorial you will use [OpenStackClient](https://pypi.org/project/python-openstackclient/) or access 
 Openstack's dashboard manually to get all necessary configuration information from your project.
 
@@ -94,6 +94,12 @@ You will now install packages required by BiBiGrid within your newly created vir
 
 BiBiGrid must know which cloud authentication information to use and later as which user it can access the servers. Therefore, you need to set three keys: [region](https://docs.openstack.org/python-openstackclient/rocky/cli/command-objects/region.html), [availabilityZone](https://docs.openstack.org/nova/latest/admin/availability-zones.html) and [sshUser](https://www.redhat.com/sysadmin/access-remote-systems-ssh). Following the next steps you will be able to update the [premade template](#premade-template).
 
+<details>
+<summary>Why are the keys in the template already set?</summary>
+
+Making mistakes while filling the template keys can be annoying at times. We therefore decided to prefill some keys for you, so you can directly see whether the key you found is correct.
+</details>
+
 #### region
 
 Determine the [region](https://docs.openstack.org/python-openstackclient/rocky/cli/command-objects/region.html) by running:
@@ -116,11 +122,11 @@ If multiple zones are shown, pick default. Set the template's `availabilityZone`
 
 #### sshUser
 
-The [sshUser](https://www.redhat.com/sysadmin/access-remote-systems-ssh) depends on your server image. Since we run on top of Ubuntu 22.04 the ssh-user is `ubuntu`. Usually you would now set the template's `sshUser` key to `ubuntu`, but we've already done that for you.
+The [sshUser](https://www.redhat.com/sysadmin/access-remote-systems-ssh) depends on your server image. Since we run on top of Ubuntu 22.04 the ssh-user is `ubuntu`. Set the template's `sshUser` key to `ubuntu`.
 
 ### Network
 
-We created a subnet for this workshop. Determine your subnet's name or ID by running:
+We created a subnet for this workshop. Determine your subnet's `Name` by running:
 
 ```
 openstack subnet list --os-cloud=openstack
@@ -182,7 +188,7 @@ workerInstances:
     count: 2
 ```
 
-The key `workerInstances` expects a list. Each list element is a `worker group` with a `image` + `type` combination and a `count`.
+The key `workerInstances` expects a list. Each list element is a `worker group` with an `image` + `type` combination and a `count`.
 ```shell
 workerInstances:
   - type: de.NBI tiny
@@ -238,7 +244,7 @@ Detailed cluster info: ./bibigrid.sh -i 'bibigrid.yml' -l -cid 6jh83w0n3vsip90
 You can now establish an SSH connection to your cluster's master by executing the `SSH` line of your `create`'s 
 output: 
 ```shell
-ssh -i '~/.bibigrid/tempKey_bibi-6jh83w0n3vsip90' ubuntu@123.45.67.890`. 
+ssh -i '~/.bibigrid/tempKey_bibi-6jh83w0n3vsip90' ubuntu@123.45.67.890 
 ```
 But make sure to use the one generated for you by BiBiGrid since 
 
@@ -271,12 +277,17 @@ to connect to Theia. You may even use `./bibigrid.sh -i bibigrid.yml -ide` since
 
 #### Hello World, Hello BiBiGrid!
 
-After successfully connecting to Theia IDE, let's start with a "hello world".
+<details>
+<summary>Degression: Job Scheduling (Slurm)</summary>
 
-- Open a terminal and change into the spool directory. 
-`cd /vol/spool`
+[Slurm](https://slurm.schedmd.com/) is used for job scheduling/workload management. To see all nodes in your cluster execute `sinfo`. You will notice that workers are `idle~`. That means they are `idle` and `~` (powered down). Slurm uses many symbols and to indicate node states. See [here](https://slurm.schedmd.com/sinfo.html#SECTION_NODE-STATE-CODES) for more about that. To see all running jobs, execute `squeue`. You will notice that no job is currently running.
+</details>
 
-- Create a new shell script `helloworld.sh`:
+After successfully connecting to Theia IDE, we will now run our first job on our cluster. Let's start with a "hello world".
+
+- Open a terminal
+
+- Create a new shell script `nano /vol/spool/helloworld.sh`:
 
 ```shell
 #!/bin/bash
@@ -284,11 +295,11 @@ echo Hello from $(hostname) !
 sleep 10
 ```
 
-- Make `helloworld.sh` executable using [chmod](https://linux.die.net/man/1/chmod): `chmod u+x helloworld.sh`
-- Submit this script as an array job 50 times : `sbatch --array=1-50 --job-name=helloworld helloworld.sh`. The job `helloworld` runs now. It will take a while to finish, but you can already inspect some information while it runs.
-- The master will now power up worker nodes (as described by you in `bibigrid.yml`) to assist him with this job. Execute `sinfo` after a few seconds to see the current node status.
+- Make `helloworld.sh` executable using [chmod](https://linux.die.net/man/1/chmod): `chmod u+x /vol/spool/helloworld.sh`
+- Submit this script as an array job 50 times : `sbatch --array=1-50 --job-name=helloworld /vol/spool/helloworld.sh` (run the job 50 times). The job `helloworld` runs now. It will take a while to finish, but you can already inspect some information while it runs.
+- The master will now power up worker nodes (as you described it in `bibigrid.yml`) to assist him with this job. Execute `sinfo` after a few seconds to see the current node status.
 - View information about all scheduled jobs by executing `squeue`. You will see your job `helloworld` there.
-- You can see `helloworld`'s output using [cat](https://linux.die.net/man/1/cat) `cat slurm-*.out`.
+- You can see `helloworld`'s output using [cat](https://linux.die.net/man/1/cat) `cat /vol/spool/slurm-*.out`.
 
 ## Terminate a cluster
 
