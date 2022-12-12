@@ -315,6 +315,12 @@ You may want to take a look at the "real" `bibigrid.yml` inside BiBiGrid's repos
 
 If you would like to deepen your knowledge maybe give BiBiGrid's [Features](https://gitlab.ub.uni-bielefeld.de/bibiserv/bibigrid/bibigrid2/-/blob/main/documentation/markdown/bibigrid_feature_list.md) or the [Software](https://gitlab.ub.uni-bielefeld.de/bibiserv/bibigrid/bibigrid2/-/blob/main/documentation/markdown/bibigrid_software_list.md) used by BiBiGrid a read.
 
+### Ansible
+Ansible, an open source community project by Red Hat, enables the idempotent setup of servers - installing software you need and so on. Knowing more about Ansible can proof very helpful when handling clusters. You can learn more about Ansible here:
+- [Ansible Workshop Presentation](https://docs.google.com/presentation/d/1W4jVHLT8dB1VsdtxXqtKlMqGbeyEWTQvSHh0WMfWo2c/edit#slide=id.p10)
+- [de.NBI Cloud's Ansible Course](https://gitlab.ub.uni-bielefeld.de/denbi/ansible-course)
+- [Getting started with Ansible](https://docs.ansible.com/ansible/latest/getting_started/index.html)
+
 ### I have an issue
 
 Issues can be created [here](https://gitlab.ub.uni-bielefeld.de/bibiserv/bibigrid/bibigrid2/-/issues). However, GitLab only allows users to create issues and since we are running GitLab on `bielefeld.de`, you would need to create a guest account. This is of course not a viable long-term solution and we are actively working on solving [this issue](https://gitlab.ub.uni-bielefeld.de/bibiserv/bibigrid/bibigrid2/-/issues/46).
