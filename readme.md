@@ -280,7 +280,7 @@ to connect to Theia. You may even use `./bibigrid.sh -i bibigrid.yml -ide` since
 <details>
 <summary>Degression: Job Scheduling (Slurm)</summary>
 
-[Slurm](https://slurm.schedmd.com/) is used for job scheduling/workload management. To see all nodes in your cluster execute `sinfo`. You will notice that workers are `idle~`. That means they are `idle` and `~` (powered down). Slurm uses many symbols and to indicate node states. See [here](https://slurm.schedmd.com/sinfo.html#SECTION_NODE-STATE-CODES) for more about that. To see all running jobs, execute `squeue`. You will notice that no job is currently running.
+[Slurm](https://slurm.schedmd.com/) is used for job scheduling/workload management. To see all nodes in your cluster execute `sinfo`. You will notice that workers are `idle~`. That means they are `idle` and `~` (powered down). Slurm uses many symbols and words to indicate node states. See [here](https://slurm.schedmd.com/sinfo.html#SECTION_NODE-STATE-CODES) for more about that. To see all running jobs, execute `squeue`. You will notice that no job is currently running.
 </details>
 
 After successfully connecting to Theia IDE, we will now run our first job on our cluster. Let's start with a "hello world".
