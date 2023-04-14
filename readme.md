@@ -296,7 +296,7 @@ sleep 10
 ```
 
 - Make `helloworld.sh` executable using [chmod](https://linux.die.net/man/1/chmod): `chmod u+x /vol/spool/helloworld.sh`
-- Go into the /vol/spool/ directory
+- Change into the /vol/spool/ directory: `cd /vol/spool/`
 - Submit this script as an array job 50 times : `sbatch --array=1-50 --job-name=helloworld helloworld.sh` (run the job 50 times). The job `helloworld` runs now. It will take a while to finish, but you can already inspect some information while it runs.
 - The master will now power up worker nodes (as you described it in `bibigrid.yml`) to assist him with this job. Execute `sinfo` after a few seconds to see the current node status.
 - View information about all scheduled jobs by executing `squeue`. You will see your job `helloworld` there.
