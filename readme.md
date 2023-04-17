@@ -5,7 +5,7 @@ based on the latest release of BiBiGrid
 
 ## Prerequisites
 
-- System base on Linux or OSX or Windows Subsystem for Linux
+- System base on Linux, OSX (tested) or Windows Subsystem for Linux (untested)
 - required software packages 
   - Python > 3.6  
   - git (required)
