@@ -15,15 +15,15 @@ based on the latest release of BiBiGrid
 
 ## Download BiBiGrid
 ```shell
-git clone https://gitlab.ub.uni-bielefeld.de/bibiserv/bibigrid/bibigrid2.git
-cd bibigrid2
+git clone https://github.com/BiBiServ/bibigrid.git
+cd bibigrid
 ```
 
-The following steps assume that you are inside of the bibigrid2 folder. It should contain:
+The following steps assume that you are inside of the bibigrid folder. It should contain:
 
 ```shell
 $ ls
-bibigrid2    bibigrid.yml   README.md         resources
+bibigrid    bibigrid.yml   README.md         resources
 bibigrid.sh  documentation  requirements.txt  tests
 ```
 
