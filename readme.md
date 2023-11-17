@@ -21,10 +21,12 @@ cd bibigrid
 
 The following steps assume that you are inside of the bibigrid folder. It should contain:
 
-```shell
+```
 $ ls
-bibigrid    bibigrid.yml   README.md         resources
-bibigrid.sh  documentation  requirements.txt  tests
+bibigrid          bibigrid.yml   requirements-dev.txt   tests
+bibigrid.log      documentation  requirements-rest.txt
+bibigrid_rest.sh  log            requirements.txt
+bibigrid.sh       README.md      resources
 ```
 
 ## What will happen...
@@ -39,11 +41,11 @@ The goal of this session is to set up a small HPC cluster consisting of 3 nodes 
 
 ### Premade Template
 
-Use the prefilled configuration template [bibigrid_clum2022/resources/bibigrid.yml](resources/bibigrid.yml) as a basis for your personal BiBiGrid configuration. 
+Use the prefilled configuration template [resources/bibigrid.yml](resources/bibigrid.yml) as a basis for your personal BiBiGrid configuration. 
 Later in this tutorial you will use [OpenStackClient](https://pypi.org/project/python-openstackclient/) or access 
 Openstack's dashboard manually to get all necessary configuration information from your project.
 
-Copy the configuration template to `~/.config/bibigrid/`.
+Copy the [configuration template](resources/bibigrid.yml) to `~/.config/bibigrid/`.
 
 ### Authentication
 
@@ -51,11 +53,15 @@ In this section you will create an [application credential](https://access.redha
 
 ![Navigation](images/ac_screen1.png)
 
-Don't use the input field secret. As you can see its input is not hidden. OpenStack will generate a strong secret for you, if you leave it blank. Pick a sensible expiration date.
+Don't use the input field secret.
+- Its input is not hidden
+- OpenStack will generate a strong secret for you, if you leave it blank.
+
+Pick a sensible expiration date.
 
 ![Creation](images/ac_screen2.png)
 
-Safe the downloaded `clouds.yaml` under `~/.config/openstack/` **and** `~/.config/bibigrid/`. That will allow both `OpenstackClient` and BiBiGrid to access it.
+Safe the downloaded `clouds.yaml` under `~/.config/openstack/` **and** `~/.config/bibigrid/`. That will allow both OpenstackClient and BiBiGrid to access it.
 
 <details>
 <summary>Why not store BiBiGrids `clouds.yaml` in openstack and save the extra copy?</summary>
@@ -65,13 +71,13 @@ In the future BiBiGrid will support more than just one cloud infrastructure. The
 
 ![Download](images/ac_screen3.png)
 
-If you have `OpenstackClient` installed and `openstack subnet list --os-cloud=openstack` runs without error, you are ready to proceed.
+If you have OpenstackClient installed, try executing `openstack subnet list --os-cloud=openstack`. If it runs without errors, you are ready to proceed.
 
 ### Virtual Environment
 
-A virtual environment is something that gives you everything you need to run specific programs without altering your installation.
+A virtual environment is something that gives you everything you need to run specific programs without altering your system.
 
-#### Creating a [Virtual Environment](https://docs.python.org/3/library/venv.html)
+#### Creating a [Virtual Python Environment](https://docs.python.org/3/library/venv.html)
 
 `python3 -m venv ~/.venv/bibigrid`
 
@@ -84,7 +90,8 @@ In order to actually use the virtual environment we need to [source](https://www
 Following [pip](https://manpages.ubuntu.com/manpages/bionic/en/man1/pip.1.html) installations will only affect the virtual environment. The virtual environment is only `sourced` in the terminal where you executed the source command. Other terminals are not affected.
 
 #### Fulfilling Requirements
-You will now install packages required by BiBiGrid within your newly created virtual environment. If you haven't `sourced` your environment yet, please go [back](#sourcing-environments). In order to install all BiBiGrid requirements we simply install from the given requirements file:
+
+You will now install packages required by BiBiGrid within your newly created virtual environment. If you haven't `sourced` your environment yet, please go [back](#sourcing-environments). To install all BiBiGrid requirements, we simply install from the given requirements file:
 
 `pip install -r requirements.txt`
 
@@ -92,12 +99,13 @@ You will now install packages required by BiBiGrid within your newly created vir
 
 ### Access information
 
-BiBiGrid must know which cloud authentication information to use and later as which user it can access the servers. Therefore, you need to set three keys: [region](https://docs.openstack.org/python-openstackclient/rocky/cli/command-objects/region.html), [availabilityZone](https://docs.openstack.org/nova/latest/admin/availability-zones.html) and [sshUser](https://www.redhat.com/sysadmin/access-remote-systems-ssh). Following the next steps you will be able to update the [premade template](#premade-template).
+BiBiGrid needs to know which cloud authentication information to use and as which user it can later access the servers. Therefore, you need to set three keys: [region](https://docs.openstack.org/python-openstackclient/rocky/cli/command-objects/region.html), [availabilityZone](https://docs.openstack.org/nova/latest/admin/availability-zones.html) and [sshUser](https://www.redhat.com/sysadmin/access-remote-systems-ssh). Following the next steps you will be able to update the [premade template](#premade-template).
 
 <details>
 <summary>Why are the keys in the template already set?</summary>
 
-Making mistakes while filling the template keys can be annoying at times. We therefore decided to prefill some keys for you, so you can directly see whether the key you found is correct.
+
+In this hands-on, we want to make things as easy as possible for you. Just check whether the key you've found is the correct one and matches with the one we've written down.
 </details>
 
 #### region
@@ -126,7 +134,7 @@ The [sshUser](https://www.redhat.com/sysadmin/access-remote-systems-ssh) depends
 
 ### Network
 
-We created a subnet for this workshop. Determine your subnet's `Name` by running:
+We have created a subnet for this workshop. Determine your subnet's `Name` by running:
 
 ```
 openstack subnet list --os-cloud=openstack
@@ -159,6 +167,12 @@ openstack image list --os-cloud=openstack | grep active | grep "Ubuntu 22.04"
 Set the template's `image` key of all instances to the result's `ID`  **or** `NAME` entry of the Ubuntu 22.04 row. 
 All servers will share the same image.
 
+<details>
+<summary>Do I have to update my configuration file whenever there is a new image version?</summary>
+
+If you use the method described above, yes. However, you can also use a regex instead of a specific name to select an image during runtime. This has also avoids issues that may arise whenever an image is deactivated while your cluster is still running. For our Ubuntu 22.04 images you could use `^Ubuntu 22\.04 LTS \(.*\)$`, but usually you need to check what image names are available at your location and choose the regex accordingly. For more information on this functionality take a look at BiBiGrids [full documentation](https://github.com/BiBiServ/bibigrid/blob/master/documentation/markdown/features/configuration.md#using-regex).
+</details>
+
 #### Flavor
 
 Flavors are available hardware configurations.
@@ -169,7 +183,7 @@ The following gives you a list of all flavors:
 openstack flavor list --os-cloud=openstack
 ```
 
-Set the template's `flavor` keys  (`ID` or `NAME`) to flavors of your choice. You can use a different flavor 
+Set the template's `flavor` keys  (provide an `ID` or `NAME` - we will use `NAME` in the following examples) to flavors of your choice. You can use a different flavor 
 for the master and each worker-group.
 
 #### master
@@ -177,14 +191,14 @@ for the master and each worker-group.
 ```shell
 masterInstance:
   type: de.NBI default
-  image: [ubuntu-22.04-image-name] or [ubuntu-22.04-image-id]
+  image: ubuntu-22.04-image-name
 ```
 
 #### worker
 ```shell
 workerInstances:
   - type: de.NBI tiny
-    image: [ubuntu-22.04-image-name] or [ubuntu-22.04-image-id]
+    image: ubuntu-22.04-image-name
     count: 2
 ```
 
@@ -192,20 +206,20 @@ The key `workerInstances` expects a list. Each list element is a `worker group` 
 ```shell
 workerInstances:
   - type: de.NBI tiny
-    image: [ubuntu-22.04-image-name] or [ubuntu-22.04-image-id]
+    image: ubuntu-22.04-image-name
     count: 1
   - type: de.NBI default
-    image: [ubuntu-22.04-image-name] or [ubuntu-22.04-image-id]
+    image: ubuntu-22.04-image-name
     count: 1
 ```
 
-### Waiting for post-launch Service
+### Waiting for post-launch Services
 
 Some clouds run one or more post-launch services on every started instance, to finish the initialization after an 
 instance is available (e.g. to configure local proxy settings or local available repositories). That might interrupt 
 Ansible. Therefore, BiBiGrid needs to wait for your post-launch service(s) to finish. For that BiBiGrid needs the 
 services' names. Set the key `waitForServices` to the list of services you would like to wait for. For Bielefeld 
-this would be `de.NBI_Bielefeld_environment.service`. You should be able to find post-launch service names by 
+this would be `de.NBI_Bielefeld_environment.service`. In the future you should be able to find post-launch service names by 
 taking a look at your location's [Computer Center Specific](https://cloud.denbi.de/wiki/) site - if 
 post-launch services exist for your location.
 
@@ -265,9 +279,7 @@ However, doing everything on the running cluster from a terminal can be quite bo
 
 
 When enabled, Theia Web IDE is configured to listen on localhost port 8181 on the master instance. Since this address 
-is not directly available you have to forward it to your machine using ssh. 
-
-Execute 
+is not directly available you have to forward it to your machine using ssh. Execute 
 
 ```shell
 ./bibigrid.sh -i bibigrid.yml -ide -cid [cluster-id]
@@ -275,13 +287,14 @@ Execute
 
 to connect to Theia. You may even use `./bibigrid.sh -i bibigrid.yml -ide` since BiBiGrid will attempt to connect to your last created cluster if no cluster-id is given. Theia will be run as `systemd service` on localhost. A Theia IDE tab will be opened in your browser.
 
-#### Hello World, Hello BiBiGrid!
+## Hello World, Hello BiBiGrid!
+
+In this section you will execute a simple workflow on your cluster. We will only focus on the workflow language [Nextflow](https://www.nextflow.io/) within this tutorial. However, you could use any software that comes with a SLURM executor instead or even run the jobs directly through SLURM's CLI.
 
 <details>
-<summary>Degression: Job Scheduling (Slurm)</summary>
+<summary>Digression: Job Scheduling (SLURM)</summary>
 
 [Slurm](https://slurm.schedmd.com/) is used for job scheduling/workload management. To see all nodes in your cluster execute `sinfo`. You will notice that workers are `idle~`. That means they are `idle` and `~` (powered down). Slurm uses many symbols and words to indicate node states. See [here](https://slurm.schedmd.com/sinfo.html#SECTION_NODE-STATE-CODES) for more about that. To see all running jobs, execute `squeue`. You will notice that no job is currently running.
-</details>
 
 After successfully connecting to Theia IDE, we will now run our first job on our cluster. Let's start with a "hello world".
 
@@ -301,10 +314,13 @@ sleep 10
 - The master will now power up worker nodes (as you described it in `bibigrid.yml`) to assist him with this job. Execute `sinfo` after a few seconds to see the current node status.
 - View information about all scheduled jobs by executing `squeue`. You will see your job `helloworld` there.
 - You can see `helloworld`'s output using [cat](https://linux.die.net/man/1/cat) `cat /vol/spool/slurm-*.out`.
+</details>
+
+
 
 ## Terminate a cluster
 
-Terminating a running cluster is quite simple. Execute `./bibigrid.sh -i bibigrid.yml -t -cid [cluster-id]`. 
+Terminating a running cluster is quite simple. Execute `./bibigrid.sh -i bibigrid.yml -t -cid [cluster-id] -v`. 
 You probably already guessed it, `./bibigrid.sh -i bibigrid.yml -t` also does the trick, since BiBiGrid will fall 
 back on your last created cluster if no cluster-id is specified.
 
@@ -312,16 +328,15 @@ back on your last created cluster if no cluster-id is specified.
 
 Congratulations! You have finished BiBiGrid's Hands-on.
 
-You may want to take a look at the "real" `bibigrid.yml` inside BiBiGrid's repository. It has a few more keys. Howeve, everything you learned here stays true.
+You may want to take a look at the "real" `bibigrid.yml` inside BiBiGrid's repository. It has a few more keys. However, everything you learned here stays true.
 
 If you would like to deepen your knowledge maybe give BiBiGrid's [Features](https://gitlab.ub.uni-bielefeld.de/bibiserv/bibigrid/bibigrid2/-/blob/main/documentation/markdown/bibigrid_feature_list.md) or the [Software](https://gitlab.ub.uni-bielefeld.de/bibiserv/bibigrid/bibigrid2/-/blob/main/documentation/markdown/bibigrid_software_list.md) used by BiBiGrid a read.
 
 ### Ansible
-Ansible, an open source community project by Red Hat, enables the idempotent setup of servers - installing software you need and so on. Knowing more about Ansible can proof very helpful when handling clusters. You can learn more about Ansible here:
+Ansible, an open source community project by Red Hat, enables the idempotent setup of servers - installing software you need and so on. Knowing more about Ansible can be very helpful when handling clusters. You can learn more about Ansible here:
 - [Ansible Workshop Presentation](https://docs.google.com/presentation/d/1W4jVHLT8dB1VsdtxXqtKlMqGbeyEWTQvSHh0WMfWo2c/edit#slide=id.p10)
 - [de.NBI Cloud's Ansible Course](https://gitlab.ub.uni-bielefeld.de/denbi/ansible-course)
 - [Getting started with Ansible](https://docs.ansible.com/ansible/latest/getting_started/index.html)
 
-### I have an issue
-
-Issues can be created [here](https://gitlab.ub.uni-bielefeld.de/bibiserv/bibigrid/bibigrid2/-/issues). However, GitLab only allows users to create issues and since we are running GitLab on `bielefeld.de`, you would need to create a guest account. This is of course not a viable long-term solution and we are actively working on solving [this issue](https://gitlab.ub.uni-bielefeld.de/bibiserv/bibigrid/bibigrid2/-/issues/46).
+# I have an issue
+Issues can be created [here](https://github.com/BiBiServ/bibigrid/issues).
