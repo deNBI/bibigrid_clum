@@ -183,8 +183,7 @@ The following gives you a list of all flavors:
 openstack flavor list --os-cloud=openstack
 ```
 
-Set the template's `flavor` keys  (provide an `ID` or `NAME` - we will use `NAME` in the following examples) to flavors of your choice. You can use a different flavor 
-for the master and each worker-group.
+Set the template's `flavor` keys  (provide an `ID` or `NAME` - we will use `NAME` in the following examples) to flavors of your choice. You can use a different flavor for the master and each worker-group.
 
 #### master
 
@@ -316,6 +315,7 @@ sleep 10
 - You can see `helloworld`'s output using [cat](https://linux.die.net/man/1/cat) `cat /vol/spool/slurm-*.out`.
 </details>
 
+TODO: Explanation Nextflow
 
 
 ## Terminate a cluster
@@ -338,5 +338,5 @@ Ansible, an open source community project by Red Hat, enables the idempotent set
 - [de.NBI Cloud's Ansible Course](https://gitlab.ub.uni-bielefeld.de/denbi/ansible-course)
 - [Getting started with Ansible](https://docs.ansible.com/ansible/latest/getting_started/index.html)
 
-# I have an issue
+# For future issues
 Issues can be created [here](https://github.com/BiBiServ/bibigrid/issues).
