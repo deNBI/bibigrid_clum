@@ -28,33 +28,34 @@
 
   # master configuration
   masterInstance:
-    type: de.NBI mini
-    image: Ubuntu 22.04 LTS (2022-10-14)
+    type: de.NBI medium
+    image: # enter your image here
 
   # -- END: GENERAL CLUSTER INFORMATION --
 
   # worker configuration
   workerInstances:
-    - type: de.NBI large + ephemeral
-      image: Ubuntu 22.04 LTS (2022-10-14)
+    - type: de.NBI small
+      image: # enter your image here
       count: 2
 
   # Depends on cloud image
   sshUser: ubuntu
 
-  # Depends on cloud site:
+  # Depends on cloud site
   region: Bielefeld
 
-  # Depends on cloud site:
+  # Depends on cloud site
   availabilityZone: default
 
   # Depends on your project and cloud site
-  subnet: [add your network here]
+  subnet: # enter your subnet here
 
+  # Depends on the services that run on server start at your cloud site
   waitForServices:
     - de.NBI_Bielefeld_environment.service
 
-  # Suspend worker nodes after 9 Hours
+  # Suspend worker nodes after 9 hours being idle
   slurmConf:
     elastic_scheduling:
       SuspendTime: 32400

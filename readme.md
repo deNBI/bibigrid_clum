@@ -23,10 +23,7 @@ The following steps assume that you are inside of the bibigrid folder. It should
 
 ```
 $ ls
-bibigrid          bibigrid.yml   requirements-dev.txt   tests
-bibigrid.log      documentation  requirements-rest.txt
-bibigrid_rest.sh  log            requirements.txt
-bibigrid.sh       README.md      resources
+bibigrid  bibigrid_rest.sh  bibigrid.sh  bibigrid.yml  documentation  README.md  requirements-dev.txt  requirements-rest.txt  requirements.txt  resources  tests
 ```
 
 ## What will happen...
@@ -97,44 +94,23 @@ You will now install packages required by BiBiGrid within your newly created vir
 
 ## Configuration
 
-### Access information
-
-BiBiGrid needs to know which cloud authentication information to use and as which user it can later access the servers. Therefore, you need to set three keys: [region](https://docs.openstack.org/python-openstackclient/rocky/cli/command-objects/region.html), [availabilityZone](https://docs.openstack.org/nova/latest/admin/availability-zones.html) and [sshUser](https://www.redhat.com/sysadmin/access-remote-systems-ssh). Following the next steps you will be able to update the [premade template](#premade-template).
+Following the next steps you will update the [premade template](#premade-template).
 
 <details>
-<summary>Why are the keys in the template already set?</summary>
+<summary>Why are some keys in the template already set?</summary>
 
-
-In this hands-on, we want to make things as easy as possible for you. Just check whether the key you've found is the correct one and matches with the one we've written down.
+In this hands-on, we want to make things as easy as possible for you. Just check whether the key you've found is the correct one and matches with the one we've written down in the configuration file already.
 </details>
 
-#### region
+### SSH access information
 
-Determine the [region](https://docs.openstack.org/python-openstackclient/rocky/cli/command-objects/region.html) by running:
-
-```
-openstack region list --os-cloud=openstack
-```
-
-Set the template's `region` key to the result's `Region` entry.
-
-#### availabilityZone
-
-Determine your [availabilityZone](https://docs.openstack.org/nova/latest/admin/availability-zones.html) by running:
-
-```
-openstack availability zone list --os-cloud=openstack
-```
-
-If multiple zones are shown, pick default. Set the template's `availabilityZone` key to the result's `Zone Name` entry.
-
-#### sshUser
+BiBiGrid needs to know which [sshUser](https://www.redhat.com/sysadmin/access-remote-systems-ssh) to use in order to connect to your master. You can set this key in your `~/.config/bibigrid/bibigrid.yml` file. 
 
 The [sshUser](https://www.redhat.com/sysadmin/access-remote-systems-ssh) depends on your server image. Since we run on top of Ubuntu 22.04 the ssh-user is `ubuntu`. Set the template's `sshUser` key to `ubuntu`.
 
 ### Network
 
-We have created a subnet for this workshop. Determine your subnet's `Name` by running:
+We have created a subnet for this workshop for you. Determine your subnet's `Name` by running:
 
 ```
 openstack subnet list --os-cloud=openstack
@@ -183,25 +159,13 @@ The following gives you a list of all flavors:
 openstack flavor list --os-cloud=openstack
 ```
 
-Set the template's `flavor` keys  (provide an `ID` or `NAME` - we will use `NAME` in the following examples) to flavors of your choice. You can use a different flavor for the master and each worker-group.
+Set the template's `flavor` keys (provide an `ID` or `NAME` - we will use `NAME` in the following examples) to flavors of your choice - in this tutorial we will use `de.NBI medium` for our master and `de.NBI small` for our two workers. You can use a different flavor for the master and each worker-group.
 
-#### master
+<details>
+<summary>Example: Multiple worker groups</summary>
 
-```shell
-masterInstance:
-  type: de.NBI default
-  image: ubuntu-22.04-image-name
-```
+The key `workerInstances` expects a list. Each list element is a `worker group` with an `image` + `type` combination and a `count`. In our tutorial we use a single worker group containing two workers. Since they are in the same worker group, they are identical in flavor and image. We could, however, define two worker groups with one worker each in order to use different flavors for them.
 
-#### worker
-```shell
-workerInstances:
-  - type: de.NBI tiny
-    image: ubuntu-22.04-image-name
-    count: 2
-```
-
-The key `workerInstances` expects a list. Each list element is a `worker group` with an `image` + `type` combination and a `count`.
 ```shell
 workerInstances:
   - type: de.NBI tiny
@@ -211,12 +175,13 @@ workerInstances:
     image: ubuntu-22.04-image-name
     count: 1
 ```
+</details>
 
 ### Waiting for post-launch Services
 
 Some clouds run one or more post-launch services on every started instance, to finish the initialization after an 
 instance is available (e.g. to configure local proxy settings or local available repositories). That might interrupt 
-Ansible. Therefore, BiBiGrid needs to wait for your post-launch service(s) to finish. For that BiBiGrid needs the 
+BiBiGrid setting up the node (via Ansible). Therefore, BiBiGrid needs to wait for your post-launch service(s) to finish. For that BiBiGrid needs the 
 services' names. Set the key `waitForServices` to the list of services you would like to wait for. For Bielefeld 
 this would be `de.NBI_Bielefeld_environment.service`. In the future you should be able to find post-launch service names by 
 taking a look at your location's [Computer Center Specific](https://cloud.denbi.de/wiki/) site - if 
@@ -229,11 +194,11 @@ post-launch services exist for your location.
 
 
 ### Check Your Configuration
-Run `./bibigrid.sh -i [path-to-bibigrid.yml] -ch -v` to check your configuration. `path-to-bibigrid.yml` is 
-`bibigrid.yml` if you copied the configuration template to `~/.config/bibigrid/`. The command line argument 
+Run `./bibigrid.sh -i bibigrid.yml -ch -v` to check your configuration. The command line argument 
 `-v` allows for greater verbosity which will make it easier for you to fix issues.
 
 ## The Cluster
+### Starting the cluster
 `./bibigrid.sh -i bibigrid.yml -c -v` creates the cluster with a more verbose output. Cluster creation time 
 depends on the chosen flavor and the overall load of the cloud and will take up to 15 minutes.
 
@@ -257,7 +222,7 @@ Detailed cluster info: ./bibigrid.sh -i 'bibigrid.yml' -l -cid 6jh83w0n3vsip90
 You can now establish an SSH connection to your cluster's master by executing the `SSH` line of your `create`'s 
 output: 
 ```shell
-ssh -i '~/.bibigrid/tempKey_bibi-6jh83w0n3vsip90' ubuntu@123.45.67.890 
+ssh -i '~/.bibigrid/keys/tempKey_bibi-6jh83w0n3vsip90' ubuntu@123.45.67.890 
 ```
 But make sure to use the one generated for you by BiBiGrid since 
 
@@ -265,10 +230,23 @@ But make sure to use the one generated for you by BiBiGrid since
 - key name (here `~/.config/bibigrid/keys/tempKey_bibi-6jh83w0n3vsip90`) 
 - user@IP (here `ubuntu@123.45.67.890`) 
 
-can (and most likely will) differ on every run. Run `sinfo` after logging in. You will see only the master in 
-Slurm's list. That is correct. You have successfully logged in.
+will differ on every run. Run `sinfo` after logging in. You should see something like this:
+
+```
+PARTITION AVAIL  TIMELIMIT  NODES  STATE NODELIST
+openstack    up   infinite      2  idle~ bibigrid-worker-6jh83w0n3vsip90-[0-1]
+openstack    up   infinite      1   idle bibigrid-master-6jh83w0n3vsip90
+All*         up   infinite      2  idle~ bibigrid-worker-6jh83w0n3vsip90-[0-1]
+All*         up   infinite      1   idle bibigrid-master-6jh83w0n3vsip90
+```
 
 However, doing everything on the running cluster from a terminal can be quite bothersome. That's were Theia comes in.
+
+<details>
+<summary>Why are there two partitions (openstack and all) with the same nodes?</summary>
+
+BiBiGrid creates one partition for every cloud (here `openstack`) and one partition called `all` containing all nodes from all partitions. Since we are only using one cloud for this tutorial, we only have `openstack` and `all`.
+</details>
 
 ### Using Theia Web IDE
 
@@ -284,11 +262,11 @@ is not directly available you have to forward it to your machine using ssh. Exec
 ./bibigrid.sh -i bibigrid.yml -ide -cid [cluster-id]
 ```
 
-to connect to Theia. You may even use `./bibigrid.sh -i bibigrid.yml -ide` since BiBiGrid will attempt to connect to your last created cluster if no cluster-id is given. Theia will be run as `systemd service` on localhost. A Theia IDE tab will be opened in your browser.
+to connect to Theia. You may even use `./bibigrid.sh -i bibigrid.yml -ide` since BiBiGrid will attempt to connect to your last created cluster if no cluster-id is given. Theia will be run as `systemd service` on localhost. A Theia IDE tab will be automatically opened in your browser.
 
-## Hello World, Hello BiBiGrid!
+## Hello BiBiGrid, Hello Antibiotic Resistance!
 
-In this section you will execute a simple workflow on your cluster. We will only focus on the workflow language [Nextflow](https://www.nextflow.io/) within this tutorial. However, you could use any software that comes with a SLURM executor instead or even run the jobs directly through SLURM's CLI.
+In this section, you will execute the `resFinder` workflow to create a heatmap of antibiotic resistances using your cluster. We will only focus on the workflow language [Nextflow](https://www.nextflow.io/) within this tutorial. However, you could use any software that comes with a SLURM executor instead or even run the jobs directly through SLURM's CLI.
 
 <details>
 <summary>Digression: Job Scheduling (SLURM)</summary>
@@ -315,13 +293,51 @@ sleep 10
 - You can see `helloworld`'s output using [cat](https://linux.die.net/man/1/cat) `cat /vol/spool/slurm-*.out`.
 </details>
 
-TODO: Explanation Nextflow
+### Setting up nextflow
 
+#### Install Java
+
+```shell
+sudo apt install default-jre
+```
+
+#### Download Nextflow into your /vol/spool folder
+
+```shell
+cd /vol/spool
+wget -qO- https://get.nextflow.io | bash
+```
+
+#### Get and execute resFinder
+Execute locally in this repository's folder in order to copy our test workflow to the master (use your own key path and master ip)
+
+```shell
+scp -i '~/.bibigrid/keys/tempKey_bibi-6jh83w0n3vsip90' resources/Resistance_Nextflow.tar.xz ubuntu@123.45.67.890 :/vol/spool/Resistance_Nextflow.tar.xz
+```
+
+Execute on remote within `/vol/spool` in order to unpack our workflow and run it on the master.
+
+```shell
+tar -xvf Resistance_Nextflow.tar.xz
+./nextflow run resFinder.nf
+```
+
+Using `squeue` in another terminal will show you that this execution is not running on our slurm cluster.
+
+##### On Slurm
+
+In order to run our workflow on our slurm cluster, we need to set the executor to slurm. We have done that using a profile definition (see `nextflow.config`).
+
+```shell
+./nextflow run resFinder.nf -profile slurm
+```
+
+Once our workflow has finished, we can see the generated heatmap in `outputs/collected_heatmaps/`.
 
 ## Terminate a cluster
 
 Terminating a running cluster is quite simple. Execute `./bibigrid.sh -i bibigrid.yml -t -cid [cluster-id] -v`. 
-You probably already guessed it, `./bibigrid.sh -i bibigrid.yml -t` also does the trick, since BiBiGrid will fall 
+You have probably already guessed it, `./bibigrid.sh -i bibigrid.yml -t` also does the trick, since BiBiGrid will fall 
 back on your last created cluster if no cluster-id is specified.
 
 ## Moving Forward: Further Explorations
