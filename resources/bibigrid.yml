@@ -15,7 +15,7 @@
   #  - [mount one]
 
   ## Uncomment if you don't want assign a public ip to the master; for internal cluster.
-  useMasterWithPublicIp: False
+  # useMasterWithPublicIp: False
 
   # Other keys
   # localFS: False

@@ -203,7 +203,7 @@ Run `./bibigrid.sh -i bibigrid.yml -ch -v` to check your configuration. The comm
 depends on the chosen flavor and the overall load of the cloud and will take up to 15 minutes.
 
 ### List Running Cluster
-Since several clusters can be running simultaneously, it can be useful to list all running clusters:
+Since several clusters can run simultaneously, listing all running clusters can be useful:
 
 Execute `./bibigrid.sh -i bibigrid.yml -l`. You will receive a general overview over all clusters started 
 in your project.
