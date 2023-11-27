@@ -350,7 +350,6 @@ If you would like to deepen your knowledge maybe give BiBiGrid's [Features](http
 
 ### Ansible
 Ansible, an open source community project by Red Hat, enables the idempotent setup of servers - installing software you need and so on. Knowing more about Ansible can be very helpful when handling clusters. You can learn more about Ansible here:
-- [Ansible Workshop Presentation](https://docs.google.com/presentation/d/1W4jVHLT8dB1VsdtxXqtKlMqGbeyEWTQvSHh0WMfWo2c/edit#slide=id.p10)
 - [de.NBI Cloud's Ansible Course](https://gitlab.ub.uni-bielefeld.de/denbi/ansible-course)
 - [Getting started with Ansible](https://docs.ansible.com/ansible/latest/getting_started/index.html)
 

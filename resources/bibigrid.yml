@@ -14,7 +14,7 @@
   #masterMounts:
   #  - [mount one]
 
-  ## Uncomment if you don't want assign a public ip to the master; for internal cluster.
+  ## Uncomment if you don't want assign a public ip to the master; for internal cluster
   # useMasterWithPublicIp: False
 
   # Other keys
