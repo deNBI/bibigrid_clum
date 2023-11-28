@@ -334,13 +334,72 @@ In order to run our workflow on our slurm cluster, we need to set the executor t
 
 Once our workflow has finished, we can see the generated heatmap in `outputs/collected_heatmaps/`.
 
+## Ansible
+
+Let's automate our setup! First let us include the role `additional`. Open `~/playbook/site.yml` and add `additional`:
+
+```yaml
+- become: 'yes'
+  hosts: master
+  roles:
+  - role: bibigrid
+    tags:
+    - bibigrid
+    - bibigrid-master
+  - role: additional
+    tags:
+    - additional
+    become: False
+```
+
+Next, let us take a look what the additional role actually does. Currently, it just shows a debug message. We would like to add what we have done on our cluster so far:
+
+```yaml
+- debug:
+    msg: 
+    - "Hello {{ ansible_user }}!"
+
+- name: Unarchive ZIP file from GitHub repository
+  unarchive:
+    src: "https://github.com/deNBI/bibigrid_clum/raw/main/resources/Resistance_Nextflow.tar.xz"
+    dest: "/vol/spool/"
+    remote_src: yes
+
+- name: Install Java JRE on Debian/Ubuntu
+  become: True
+  apt:
+    name: default-jre  # Package name for Java JRE on Debian-based systems
+    state: present     # Ensure that the package is present, you can use "latest" as well
+
+- name: Get Nextflow
+  shell: wget -qO- https://get.nextflow.io | bash
+  args:
+    chdir: /vol/spool/
+
+- name: Execute Nextflow workflow
+  shell: ./nextflow run resFinder.nf -profile slurm
+  args:
+    chdir: "/vol/spool"  # Change to the directory where your workflow resides
+```
+
+And let's execute our role:
+
+```sh
+sudo rm -r /vol/spool/* # in order to reset
+bibiplay -t additional
+```
+
+Taking a look at `/vol/spool/`, we can see that the `output` folder has been generated once again.
+
 ## Terminate a cluster
 
 Terminating a running cluster is quite simple. Execute `./bibigrid.sh -i bibigrid.yml -t -cid [cluster-id] -v`. 
 You have probably already guessed it, `./bibigrid.sh -i bibigrid.yml -t` also does the trick, since BiBiGrid will fall 
 back on your last created cluster if no cluster-id is specified.
 
-## Moving Forward: Further Explorations
+## Moving Forward
+
+### More BiBiGrid
 
 Congratulations! You have finished BiBiGrid's Hands-on.
 
@@ -348,7 +407,7 @@ You may want to take a look at the "real" `bibigrid.yml` inside BiBiGrid's repos
 
 If you would like to deepen your knowledge maybe give BiBiGrid's [Features](https://gitlab.ub.uni-bielefeld.de/bibiserv/bibigrid/bibigrid2/-/blob/main/documentation/markdown/bibigrid_feature_list.md) or the [Software](https://gitlab.ub.uni-bielefeld.de/bibiserv/bibigrid/bibigrid2/-/blob/main/documentation/markdown/bibigrid_software_list.md) used by BiBiGrid a read.
 
-### Ansible
+### More Ansible
 Ansible, an open source community project by Red Hat, enables the idempotent setup of servers - installing software you need and so on. Knowing more about Ansible can be very helpful when handling clusters. You can learn more about Ansible here:
 - [de.NBI Cloud's Ansible Course](https://gitlab.ub.uni-bielefeld.de/denbi/ansible-course)
 - [Getting started with Ansible](https://docs.ansible.com/ansible/latest/getting_started/index.html)
