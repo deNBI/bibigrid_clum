@@ -1,0 +1,24 @@
+- debug:
+    msg: 
+    - "Hello {{ ansible_user }}!"
+
+- name: Unarchive ZIP file from GitHub repository
+  unarchive:  # downloads Resistance_Nextflow.tar.xz from GitHub and unpacks it to /vol/spool/
+    src: "https://github.com/deNBI/bibigrid_clum/raw/main/resources/Resistance_Nextflow.tar.xz"
+    dest: "/vol/spool/"
+    remote_src: yes
+
+- name: Install Java JRE on Debian/Ubuntu
+  apt:
+    name: default-jre  # package name
+    state: present     # Ensure that the package is present, you can use "latest" as well
+
+- name: Get Nextflow
+  shell: wget -qO- https://get.nextflow.io | bash
+  args:
+    chdir: /vol/spool/
+
+- name: Execute Nextflow workflow
+  shell: ./nextflow run resFinder.nf -profile slurm  # executes resFinder.nf via the slurm cluster
+  args:
+    chdir: "/vol/spool"  # Change to the workflow's directory
