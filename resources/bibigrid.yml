@@ -42,12 +42,6 @@
   # Depends on cloud image
   sshUser: ubuntu
 
-  # Depends on cloud site
-  region: Bielefeld
-
-  # Depends on cloud site
-  availabilityZone: default
-
   # Depends on your project and cloud site
   subnet: # enter your subnet here
 

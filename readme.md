@@ -312,7 +312,7 @@ wget -qO- https://get.nextflow.io | bash
 Execute locally in this repository's folder in order to copy our test workflow to the master (use your own key path and master ip)
 
 ```shell
-scp -i '~/.bibigrid/keys/tempKey_bibi-6jh83w0n3vsip90' resources/Resistance_Nextflow.tar.xz ubuntu@123.45.67.890 :/vol/spool/Resistance_Nextflow.tar.xz
+scp -i '~/.config/bibigrid/keys/tempKey_bibi-6jh83w0n3vsip90' resources/Resistance_Nextflow.tar.xz ubuntu@123.45.67.890:/vol/spool/Resistance_Nextflow.tar.xz
 ```
 
 Execute on remote within `/vol/spool` in order to unpack our workflow and run it on the master.
