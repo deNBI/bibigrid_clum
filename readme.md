@@ -336,7 +336,9 @@ Once our workflow has finished, we can see the generated heatmap in `outputs/col
 
 ## Ansible
 
-Let's automate our setup! First let us include the role `additional`. Open `~/playbook/site.yml` and add `additional`:
+[Ansible](https://docs.ansible.com), an open source community project by Red Hat, enables the idempotent setup of servers - installing software you need and so on. Knowing more about Ansible can be very helpful when handling clusters.
+
+Let's automate our setup using Ansible! First let us include the role `additional`. Open `~/playbook/site.yml` and add `additional` to the `hosts: master` section:
 
 ```yaml
 - become: 'yes'
@@ -350,6 +352,9 @@ Let's automate our setup! First let us include the role `additional`. Open `~/pl
     tags:
     - additional
     become: False
+  vars_files:
+  - vars/common_configuration.yml
+  - vars/hosts.yml
 ```
 
 Next, let us take a look what the additional role actually does. Currently, it just shows a debug message. We would like to add what we have done on our cluster so far:
@@ -382,7 +387,7 @@ Next, let us take a look what the additional role actually does. Currently, it j
     chdir: "/vol/spool"  # Change to the directory where your workflow resides
 ```
 
-And let's execute our role:
+And let's execute our role, but first we need to remove everything we have done manually (for simplicity we will not uninstall java):
 
 ```sh
 sudo rm -r /vol/spool/* # in order to reset
@@ -408,7 +413,7 @@ You may want to take a look at the "real" `bibigrid.yml` inside BiBiGrid's repos
 If you would like to deepen your knowledge maybe give BiBiGrid's [Features](https://gitlab.ub.uni-bielefeld.de/bibiserv/bibigrid/bibigrid2/-/blob/main/documentation/markdown/bibigrid_feature_list.md) or the [Software](https://gitlab.ub.uni-bielefeld.de/bibiserv/bibigrid/bibigrid2/-/blob/main/documentation/markdown/bibigrid_software_list.md) used by BiBiGrid a read.
 
 ### More Ansible
-Ansible, an open source community project by Red Hat, enables the idempotent setup of servers - installing software you need and so on. Knowing more about Ansible can be very helpful when handling clusters. You can learn more about Ansible here:
+You can learn more about Ansible (and [Ansible Galaxy](https://galaxy.ansible.com/ui/)) here:
 - [de.NBI Cloud's Ansible Course](https://gitlab.ub.uni-bielefeld.de/denbi/ansible-course)
 - [Getting started with Ansible](https://docs.ansible.com/ansible/latest/getting_started/index.html)
 
