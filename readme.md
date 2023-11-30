@@ -10,8 +10,7 @@ based on the latest release of BiBiGrid
   - Python > 3.6  
   - git (required)
   - openssh 
-- Openstack API access 
-- [OpenstackClient](https://pypi.org/project/python-openstackclient/) (recommended)
+- Openstack API access
 
 ## Download BiBiGrid
 ```shell
@@ -68,8 +67,6 @@ In the future BiBiGrid will support more than just one cloud infrastructure. The
 
 ![Download](images/ac_screen3.png)
 
-If you have OpenstackClient installed, try executing `openstack subnet list --os-cloud=openstack`. If it runs without errors, you are ready to proceed.
-
 ### Virtual Environment
 
 A virtual environment is something that gives you everything you need to run specific programs without altering your system.
@@ -91,6 +88,8 @@ Following [pip](https://manpages.ubuntu.com/manpages/bionic/en/man1/pip.1.html) 
 You will now install packages required by BiBiGrid within your newly created virtual environment. If you haven't `sourced` your environment yet, please go [back](#sourcing-environments). To install all BiBiGrid requirements, we simply install from the given requirements file:
 
 `pip install -r requirements.txt`
+
+Try executing `openstack subnet list --os-cloud=openstack` within this environment. If it runs without errors, you are ready to proceed. Otherwise you need to check your `clouds.yaml` and your virtual environment.
 
 ## Configuration
 
