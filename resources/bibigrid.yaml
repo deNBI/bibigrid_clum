@@ -26,10 +26,19 @@
 
   useMasterAsCompute: False
 
+  nfsShares:
+    - /vol/permanent
+
   # master configuration
   masterInstance:
     type: de.NBI medium
     image: # enter your image here
+    volumes:
+      - name: resFinder
+        mountPoint: /vol/permanent
+        type: CEPH_NVME
+        permanent: True
+        size: 25
 
   # -- END: GENERAL CLUSTER INFORMATION --
 
@@ -38,6 +47,11 @@
     - type: de.NBI small
       image: # enter your image here
       count: 2
+      volumes:
+        - mountPoint: /vol/semipermanent
+          type: CEPH_NVME
+          semipermanent: True
+          size: 25
 
   # Depends on cloud image
   sshUser: ubuntu

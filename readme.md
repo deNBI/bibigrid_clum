@@ -22,7 +22,7 @@ The following steps assume that you are inside of the bibigrid folder. It should
 
 ```
 $ ls
-bibigrid  bibigrid_rest.sh  bibigrid.sh  bibigrid.yml  documentation  README.md  requirements-dev.txt  requirements-rest.txt  requirements.txt  resources  tests
+bibigrid  bibigrid_rest.sh  bibigrid.sh  bibigrid.yaml  documentation  README.md  requirements-dev.txt  requirements-rest.txt  requirements.txt  resources  tests
 ```
 
 ## What will happen...
@@ -37,16 +37,18 @@ The goal of this session is to set up a small HPC cluster consisting of 3 nodes 
 
 ### Premade Template
 
-Use the prefilled configuration template [resources/bibigrid.yml](resources/bibigrid.yml) as a basis for your personal BiBiGrid configuration. 
+Use the prefilled configuration template [resources/bibigrid.yaml](resources/bibigrid.yaml) as a basis for your personal BiBiGrid configuration. 
 Later in this tutorial you will use [OpenStackClient](https://pypi.org/project/python-openstackclient/) or access 
 Openstack's dashboard manually to get all necessary configuration information from your project.
 
-Copy the [configuration template](resources/bibigrid.yml) to `~/.config/bibigrid/`.
+Copy the [configuration template](resources/bibigrid.yaml) to `~/.config/bibigrid/`.
 
 ```shell
 mkdir ~/.config/bibigrid
-cp resources/bibigrid.yml ~/.config/bibigrid/bibigrid.yml
+cp resources/bibigrid.yaml ~/.config/bibigrid/bibigrid.yaml
 ```
+
+This premade template includes volume keys for both master and worker giving you a permanent volume for your master that is shared via nfs (see `nfsShares`) and one semipermanent volume for each worker. Each volume is an SSD with 25 GB. For more on volumes read the official documentation. <!-- TODO: Add link-->
 
 ### Authentication
 
@@ -108,7 +110,7 @@ In this hands-on, we want to make things as easy as possible for you. Just check
 
 ### SSH access information
 
-BiBiGrid needs to know which [sshUser](https://www.redhat.com/sysadmin/access-remote-systems-ssh) to use in order to connect to your master. You can set this key in your `~/.config/bibigrid/bibigrid.yml` file. 
+BiBiGrid needs to know which [sshUser](https://www.redhat.com/sysadmin/access-remote-systems-ssh) to use in order to connect to your master. You can set this key in your `~/.config/bibigrid/bibigrid.yaml` file. 
 
 The [sshUser](https://www.redhat.com/sysadmin/access-remote-systems-ssh) depends on your server image. Since we run on top of Ubuntu 22.04 the ssh-user is `ubuntu`. Set the template's `sshUser` key to `ubuntu`.
 
@@ -189,7 +191,7 @@ BiBiGrid setting up the node (via Ansible). Therefore, BiBiGrid needs to wait fo
 services' names. Set the key `waitForServices` to the list of services you would like to wait for. For Bielefeld 
 this would be `de.NBI_Bielefeld_environment.service`. In the future you should be able to find post-launch service names by 
 taking a look at your location's [Computer Center Specific](https://cloud.denbi.de/wiki/) site - if 
-post-launch services exist for your location.
+post-launch services exist at your location.
 
 ```yaml
   waitForServices: 
@@ -198,18 +200,18 @@ post-launch services exist for your location.
 
 
 ### Check Your Configuration
-Run `./bibigrid.sh -i bibigrid.yml -ch -v` to check your configuration. The command line argument 
+Run `./bibigrid.sh -i bibigrid.yaml -ch -v` to check your configuration. The command line argument 
 `-v` allows for greater verbosity which will make it easier for you to fix issues.
 
 ## The Cluster
 ### Starting the cluster
-`./bibigrid.sh -i bibigrid.yml -c -v` creates the cluster with a more verbose output. Cluster creation time 
+`./bibigrid.sh -i bibigrid.yaml -c -v` creates the cluster with a more verbose output. Cluster creation time 
 depends on the chosen flavor and the overall load of the cloud and will take up to 15 minutes.
 
 ### List Running Cluster
-Since several clusters can run simultaneously, listing all running clusters can be useful:
+Since several clusters can run simultaneously in a single project, listing all running clusters can be useful:
 
-Execute `./bibigrid.sh -i bibigrid.yml -l`. You will receive a general overview over all clusters started 
+Execute `./bibigrid.sh -i bibigrid.yaml -l`. You will receive a general overview of all clusters started 
 in your project.
 
 ### Cluster SSH Connection
@@ -219,8 +221,8 @@ After a successful setup, BiBiGrid will print some information. For example:
 ```
 Cluster 6jh83w0n3vsip90 with master 123.45.67.890 up and running!
 SSH: ssh -i '~/.bibigrid/tempKey_bibi-6jh83w0n3vsip90' ubuntu@123.45.67.890
-Terminate cluster: ./bibigrid.sh -i 'bibigrid.yml' -t -cid 6jh83w0n3vsip90
-Detailed cluster info: ./bibigrid.sh -i 'bibigrid.yml' -l -cid 6jh83w0n3vsip90
+Terminate cluster: ./bibigrid.sh -i 'bibigrid.yaml' -t -cid 6jh83w0n3vsip90
+Detailed cluster info: ./bibigrid.sh -i 'bibigrid.yaml' -l -cid 6jh83w0n3vsip90
 ```
 
 You can now establish an SSH connection to your cluster's master by executing the `SSH` line of your `create`'s 
@@ -244,13 +246,13 @@ All*         up   infinite      2  idle~ bibigrid-worker-6jh83w0n3vsip90-[0-1]
 All*         up   infinite      1   idle bibigrid-master-6jh83w0n3vsip90
 ```
 
-However, doing everything on the running cluster from a terminal can be quite bothersome. That's were Theia comes in.
-
 <details>
 <summary>Why are there two partitions (openstack and all) with the same nodes?</summary>
 
 BiBiGrid creates one partition for every cloud (here `openstack`) and one partition called `all` containing all nodes from all partitions. Since we are only using one cloud for this tutorial, we only have `openstack` and `all`.
 </details>
+
+However, dealing with the cluster from just a terminal can be quite bothersome. That's were Theia Web IDE comes in. Log out of your ssh connection for now.
 
 ### Using Theia Web IDE
 
@@ -260,13 +262,13 @@ BiBiGrid creates one partition for every cloud (here `openstack`) and one partit
 
 
 When enabled, Theia Web IDE is configured to listen on localhost port 8181 on the master instance. Since this address 
-is not directly available you have to forward it to your machine using ssh. Execute 
+is not directly available you have to forward it to your machine using ssh. However, BiBiGrid handles that for you. Simply execute 
 
 ```shell
-./bibigrid.sh -i bibigrid.yml -ide -cid [cluster-id]
+./bibigrid.sh -i bibigrid.yaml -ide -cid [cluster-id]
 ```
 
-to connect to Theia. You may even use `./bibigrid.sh -i bibigrid.yml -ide` since BiBiGrid will attempt to connect to your last created cluster if no cluster-id is given. Theia will be run as `systemd service` on localhost. A Theia IDE tab will be automatically opened in your browser.
+to connect to Theia. A Theia IDE tab will be automatically opened in your browser. You could have omitted `-cid [cluster-id]`. If no `-cid` is given, BiBiGrid will attempt to connect to your last created cluster.
 
 ## Hello BiBiGrid, Hello Antibiotic Resistance!
 
@@ -292,7 +294,7 @@ sleep 10
 - Make `helloworld.sh` executable using [chmod](https://linux.die.net/man/1/chmod): `chmod u+x /vol/spool/helloworld.sh`
 - Change into the /vol/spool/ directory: `cd /vol/spool/`
 - Submit this script as an array job 50 times : `sbatch --array=1-50 --job-name=helloworld helloworld.sh` (run the job 50 times). The job `helloworld` runs now. It will take a while to finish, but you can already inspect some information while it runs.
-- The master will now power up worker nodes (as you described it in `bibigrid.yml`) to assist him with this job. Execute `sinfo` after a few seconds to see the current node status.
+- The master will now power up worker nodes (as you described it in `bibigrid.yaml`) to assist him with this job. Execute `sinfo` after a few seconds to see the current node status.
 - View information about all scheduled jobs by executing `squeue`. You will see your job `helloworld` there.
 - You can see `helloworld`'s output using [cat](https://linux.die.net/man/1/cat) `cat /vol/spool/slurm-*.out`.
 </details>
@@ -305,10 +307,10 @@ sleep 10
 sudo apt install default-jre
 ```
 
-#### Download Nextflow into your /vol/spool folder
+#### Download Nextflow into your /vol/permanent folder
 
 ```shell
-cd /vol/spool
+cd /vol/permanent
 wget -qO- https://get.nextflow.io | bash
 ```
 
@@ -316,10 +318,10 @@ wget -qO- https://get.nextflow.io | bash
 Execute locally in this repository's folder in order to copy our test workflow to the master (use your own key path and master ip)
 
 ```shell
-scp -i '~/.config/bibigrid/keys/tempKey_bibi-6jh83w0n3vsip90' resources/Resistance_Nextflow.tar.xz ubuntu@123.45.67.890:/vol/spool/Resistance_Nextflow.tar.xz
+scp -i '~/.config/bibigrid/keys/tempKey_bibi-6jh83w0n3vsip90' resources/Resistance_Nextflow.tar.xz ubuntu@123.45.67.890:/vol/permanent/Resistance_Nextflow.tar.xz
 ```
 
-Execute on remote within `/vol/spool` in order to unpack our workflow and run it on the master.
+Execute on remote within `/vol/permanent` in order to unpack our workflow and run it on the master.
 
 ```shell
 tar -xvf Resistance_Nextflow.tar.xz
@@ -339,10 +341,11 @@ In order to run our workflow on our slurm cluster, we need to set the executor t
 Once our workflow has finished, we can see the generated heatmap in `outputs/collected_heatmaps/`.
 
 ## Ansible
+<!-- TODO: Rework for new structure -->
 
 [Ansible](https://docs.ansible.com), an open source community project by Red Hat, enables the idempotent setup of servers - installing software you need and so on. Knowing more about Ansible can be very helpful when handling clusters.
 
-Let's automate our setup using Ansible! First let us include the role `additional`. Open `~/playbook/site.yml` and add `additional` to the `hosts: master` section:
+Let's automate our setup using Ansible! First let us include the role `additional`. Open `~/playbook/site.yaml` and add `additional` to the `hosts: master` section:
 
 ```yaml
 - become: 'yes'
@@ -357,8 +360,8 @@ Let's automate our setup using Ansible! First let us include the role `additiona
     - additional
     become: False
   vars_files:
-  - vars/common_configuration.yml
-  - vars/hosts.yml
+  - vars/common_configuration.yaml
+  - vars/hosts.yaml
 ```
 
 Next, let us take a look what the additional role actually does. Currently, it just shows a debug message. We would like to add what we have done on our cluster so far:
@@ -371,7 +374,7 @@ Next, let us take a look what the additional role actually does. Currently, it j
 - name: Unarchive ZIP file from GitHub repository
   unarchive:
     src: "https://github.com/deNBI/bibigrid_clum/raw/main/resources/Resistance_Nextflow.tar.xz"
-    dest: "/vol/spool/"
+    dest: "/vol/permanent/"
     remote_src: yes
 
 - name: Install Java JRE on Debian/Ubuntu
@@ -383,27 +386,26 @@ Next, let us take a look what the additional role actually does. Currently, it j
 - name: Get Nextflow
   shell: wget -qO- https://get.nextflow.io | bash
   args:
-    chdir: /vol/spool/
+    chdir: /vol/permanent/
 
 - name: Execute Nextflow workflow
   shell: ./nextflow run resFinder.nf -profile slurm
   args:
-    chdir: "/vol/spool"  # Change to the directory where your workflow resides
+    chdir: "/vol/permanent"  # Change to the directory where your workflow resides
 ```
 
 And let's execute our role, but first we need to remove everything we have done manually (for simplicity we will not uninstall java):
 
 ```sh
-sudo rm -r /vol/spool/* # in order to reset
+sudo rm -r /vol/permanent/* # in order to reset
 bibiplay -t additional
 ```
 
-Taking a look at `/vol/spool/`, we can see that the `output` folder has been generated once again.
+Taking a look at `/vol/permanent/`, we can see that the `output` folder has been generated once again.
 
 ## Terminate a cluster
 
-Terminating a running cluster is quite simple. Execute `./bibigrid.sh -i bibigrid.yml -t -cid [cluster-id] -v`. 
-You have probably already guessed it, `./bibigrid.sh -i bibigrid.yml -t` also does the trick, since BiBiGrid will fall 
+Execute `./bibigrid.sh -i bibigrid.yaml -t -cid [cluster-id] -v`. `./bibigrid.sh -i bibigrid.yaml -t` also does the trick, since BiBiGrid will fall 
 back on your last created cluster if no cluster-id is specified.
 
 ## Moving Forward
@@ -412,14 +414,15 @@ back on your last created cluster if no cluster-id is specified.
 
 Congratulations! You have finished BiBiGrid's Hands-on.
 
-You may want to take a look at the "real" `bibigrid.yml` inside BiBiGrid's repository. It has a few more keys. However, everything you learned here stays true.
+You may want to take a look at the "real" `bibigrid.yaml` inside BiBiGrid's repository. It has a lot more options. However, everything you learned here stays true.
 
-If you would like to deepen your knowledge maybe give BiBiGrid's [Features](https://gitlab.ub.uni-bielefeld.de/bibiserv/bibigrid/bibigrid2/-/blob/main/documentation/markdown/bibigrid_feature_list.md) or the [Software](https://gitlab.ub.uni-bielefeld.de/bibiserv/bibigrid/bibigrid2/-/blob/main/documentation/markdown/bibigrid_software_list.md) used by BiBiGrid a read.
+If you would like to deepen your knowledge maybe give BiBiGrid's [Features](https://gitlab.ub.uni-bielefeld.de/bibiserv/bibigrid/bibigrid2/-/blob/main/documentation/markdown/bibigrid_feature_list.md) or the [Software](https://gitlab.ub.uni-bielefeld.de/bibiserv/bibigrid/bibigrid2/-/blob/main/documentation/markdown/bibigrid_software_list.md) used by BiBiGrid a read. If you would like to know more about the configuration file see [Configuration](https://github.com/BiBiServ/bibigrid/blob/master/documentation/markdown/features/configuration.md).
 
 ### More Ansible
-You can learn more about Ansible (and [Ansible Galaxy](https://galaxy.ansible.com/ui/)) here:
+You can learn more about Ansible here:
 - [de.NBI Cloud's Ansible Course](https://gitlab.ub.uni-bielefeld.de/denbi/ansible-course)
 - [Getting started with Ansible](https://docs.ansible.com/ansible/latest/getting_started/index.html)
+. [Ansible Galaxy](https://galaxy.ansible.com/ui/)
 
 # For future issues
-Issues can be created [here](https://github.com/BiBiServ/bibigrid/issues).
+-biBiGrid issues can be opened [here](https://github.com/BiBiServ/bibigrid/issues). Feel free to contact us for support as well.
