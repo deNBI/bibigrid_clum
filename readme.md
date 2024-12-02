@@ -70,8 +70,9 @@ Pick a sensible expiration date.
 
 Save the downloaded `clouds.yaml` under `~/.config/openstack/` **and** `~/.config/bibigrid/`. That will allow both OpenstackClient and BiBiGrid to access it:
 ```sh
-cp ~/Downloads/clouds.yaml ~/.config/openstack/clouds.yaml
 cp ~/Downloads/clouds.yaml ~/.config/bibigrid/clouds.yaml
+mkdir ~/.config/openstack
+cp ~/Downloads/clouds.yaml ~/.config/openstack/clouds.yaml
 ```
 
 <details>
@@ -97,9 +98,12 @@ In order to actually use the virtual environment we need to [source](https://www
 
 `source ~/.venv/bibigrid/bin/activate`
 
-Following [pip](https://manpages.ubuntu.com/manpages/bionic/en/man1/pip.1.html) installations will only affect the virtual environment. The virtual environment is only `sourced` in the terminal where you executed the source command. Other terminals are not affected.
+Following [pip](https://manpages.ubuntu.com/manpages/bionic/en/man1/pip.1.html) installations will only affect the virtual environment.
+The virtual environment is only `sourced` in the terminal where you executed the source command. Other terminals are not affected.
 
 #### Fulfilling Requirements
+
+Now let's move into the bibigrid folder `cd bibigrid` we will stay in it unless explicitly mentioned otherwise.
 
 You will now install packages required by BiBiGrid within your newly created virtual environment. If you haven't `sourced` your environment yet, please go [back](#sourcing-environments). To install all BiBiGrid requirements, we simply install from the given requirements file:
 

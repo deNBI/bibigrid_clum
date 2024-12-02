@@ -29,9 +29,9 @@
       image: # enter your image here
       count: 2
       volumes:
-        - mountPoint: /vol/semipermanent
+        - mountPoint: /vol/semiPermanent
           type: CEPH_NVME
-          semipermanent: True
+          semiPermanent: True
           size: 25
 
   # Depends on cloud image
