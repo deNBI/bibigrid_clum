@@ -48,7 +48,9 @@ mkdir ~/.config/bibigrid
 cp bibigrid_clum/resources/bibigrid.yaml ~/.config/bibigrid/bibigrid.yaml
 ```
 
-This premade template includes volume keys for both master and worker giving you a permanent volume for your master that is shared via nfs (see `nfsShares`) and one semipermanent volume for each worker. Each volume is an SSD with 25 GB. For more on volumes read the official documentation. <!-- TODO: Add link-->
+This premade template includes volume keys for both master and worker giving you a permanent volume for your master 
+that is shared via nfs (see `nfsShares`) and one semipermanent volume for each worker.
+Each volume is an SSD with 25 GB.
 
 ### Authentication
 
