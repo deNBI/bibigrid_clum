@@ -1,30 +1,13 @@
-  # See https://cloud.denbi.de/wiki/Tutorials/BiBiGrid/ (after update)
-  # First configuration will be used for general cluster information and must include the master.
-  # All other configurations mustn't include another master, but exactly one vpnWorker instead (keys like master).
+# BiBiGrid's configuration file
 
-- infrastructure: openstack # former mode.
-  cloud: openstack # name of clouds.yaml entry
+- infrastructure: openstack # # describes what cloud provider is used (others are not implemented yet)
+  cloud: openstack # name of clouds.yaml entry (openstack for openstack if not changed)
 
-  # -- BEGIN: GENERAL CLUSTER INFORMATION --
-  ## sshPublicKeyFiles listed here will be added to access the cluster. A temporary key is created by bibigrid itself.
-  #sshPublicKeyFiles:
-  #  -  [add path to your ssh key]
+  zabbix: True # monitoring
+  nfs: True # network file sharing
+  ide: True # theia web ide
 
-  ## Volumes and snapshots that will be mounted to master
-  #masterMounts:
-  #  - [mount one]
-
-  ## Uncomment if you don't want assign a public ip to the master; for internal cluster
-  # useMasterWithPublicIp: False
-
-  # Other keys
-  # localFS: False
-  # localDNSlookup: False
-  zabbix: True
-  nfs: True
-  ide: True
-
-  useMasterAsCompute: False
+  useMasterAsCompute: False # we don't use the master for our computation
 
   nfsShares:
     - /vol/permanent
@@ -39,8 +22,6 @@
         type: CEPH_NVME
         permanent: True
         size: 25
-
-  # -- END: GENERAL CLUSTER INFORMATION --
 
   # worker configuration
   workerInstances:
@@ -63,7 +44,7 @@
   waitForServices:
     - de.NBI_Bielefeld_environment.service
 
-  # Suspend worker nodes after 9 hours being idle
+  # Suspend worker nodes after 9 hours being idle; just for hands-on
   slurmConf:
     elastic_scheduling:
       SuspendTime: 32400
