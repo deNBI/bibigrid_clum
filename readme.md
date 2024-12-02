@@ -66,15 +66,19 @@ Pick a sensible expiration date.
 
 ![Creation](images/ac_screen2.png)
 
-Safe the downloaded `clouds.yaml` under `~/.config/openstack/` **and** `~/.config/bibigrid/`. That will allow both OpenstackClient and BiBiGrid to access it.
+![Download](images/ac_screen3.png)
+
+Save the downloaded `clouds.yaml` under `~/.config/openstack/` **and** `~/.config/bibigrid/`. That will allow both OpenstackClient and BiBiGrid to access it:
+```sh
+cp ~/Downloads/clouds.yaml ~/.config/openstack/clouds.yaml
+cp ~/Downloads/clouds.yaml ~/.config/bibigrid/clouds.yaml
+```
 
 <details>
-<summary>Why not store BiBiGrids `clouds.yaml` in openstack and save the extra copy?</summary>
+<summary>Why not store BiBiGrids `clouds.yaml` in openstack and avoid the extra copy?</summary>
 
 In the future BiBiGrid will support more than just one cloud infrastructure. Therefore, using the `~/.config/openstack` folder would be a disadvantage later.
 </details>
-
-![Download](images/ac_screen3.png)
 
 ### Virtual Environment
 
