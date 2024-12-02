@@ -7,21 +7,21 @@ based on the latest release of BiBiGrid
 
 - System base on Linux, OSX (tested) or Windows Subsystem for Linux (untested)
 - required software packages 
-  - Python > 3.10
+  - Python >= 3.10
   - git (required)
   - openssh 
 - Openstack API access
 
-## Download BiBiGrid
+## Clone bibigrid and bibigrid_clum
 ```shell
 git clone https://github.com/BiBiServ/bibigrid.git
-cd bibigrid
+git clone git@github.com:deNBI/bibigrid_clum.git
 ```
 
-The following steps assume that you are inside of the bibigrid folder. It should contain:
+Your bibigrid folder should contain:
 
 ```
-$ ls
+$ ls bibigrid
 bibigrid  bibigrid_rest.sh  bibigrid.sh  bibigrid.yaml  documentation  README.md  requirements-dev.txt  requirements-rest.txt  requirements.txt  resources  tests
 ```
 
@@ -45,7 +45,7 @@ Copy the [configuration template](resources/bibigrid.yaml) to `~/.config/bibigri
 
 ```shell
 mkdir ~/.config/bibigrid
-cp resources/bibigrid.yaml ~/.config/bibigrid/bibigrid.yaml
+cp bibigrid_clum/resources/bibigrid.yaml ~/.config/bibigrid/bibigrid.yaml
 ```
 
 This premade template includes volume keys for both master and worker giving you a permanent volume for your master that is shared via nfs (see `nfsShares`) and one semipermanent volume for each worker. Each volume is an SSD with 25 GB. For more on volumes read the official documentation. <!-- TODO: Add link-->
@@ -81,6 +81,9 @@ A virtual environment is something that gives you everything you need to run spe
 #### Creating a [Virtual Python Environment](https://docs.python.org/3/library/venv.html)
 
 `python3 -m venv ~/.venv/bibigrid`
+
+If this command fails, you probably need to install python3-venv manually. 
+For that first update `sudo apt update && sudo apt upgrade` and then `sudo apt install python3.??-venv` (use the correct version for your system).
 
 #### Sourcing Environments
 
