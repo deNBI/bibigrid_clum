@@ -353,12 +353,12 @@ In order to run our workflow on our slurm cluster, we need to set the executor t
 
 Once our workflow has finished, we can see the generated heatmap in `outputs/collected_heatmaps/`.
 
-## Ansible
+## Ansible - Let's Automate
 <!-- TODO: Rework for new structure -->
 
 [Ansible](https://docs.ansible.com), an open source community project by Red Hat, enables the idempotent setup of servers - installing software you need and so on. Knowing more about Ansible can be very helpful when handling clusters.
 
-Let's automate our setup using Ansible! First let us include the role `additional`. Open `~/playbook/site.yaml` and add `additional` to the `hosts: master` section:
+Let's automate our setup using Ansible! We have already prepared most of it in our generel user_role example. To include the user role `resistance_nextflow` at `~/playbook/roles_user`. Open `~/playbook/site.yaml` and add `resistance_nextflow` to the `hosts: master` section:
 
 ```yaml
 - become: 'yes'
@@ -368,16 +368,16 @@ Let's automate our setup using Ansible! First let us include the role `additiona
     tags:
     - bibigrid
     - bibigrid-master
-  - role: additional
+  - role: resistance_nextflow
     tags:
-    - additional
+    - resfinder
     become: False
   vars_files:
   - vars/common_configuration.yaml
   - vars/hosts.yaml
 ```
 
-Next, let us take a look what the additional role actually does. Currently, it just shows a debug message. We would like to add what we have done on our cluster so far:
+Next, we need to change our paths from `/vol/spool` but `/vol/permanent` given that we would like to store the workflow and its outputs on our permanent volume.
 
 ```yaml
 - debug:
@@ -400,18 +400,13 @@ Next, let us take a look what the additional role actually does. Currently, it j
   shell: wget -qO- https://get.nextflow.io | bash
   args:
     chdir: /vol/permanent/
-
-- name: Execute Nextflow workflow
-  shell: ./nextflow run resFinder.nf -profile slurm
-  args:
-    chdir: "/vol/permanent"  # Change to the directory where your workflow resides
 ```
 
-And let's execute our role, but first we need to remove everything we have done manually (for simplicity we will not uninstall java):
+And let's execute our role, but first we need to remove everything we have done manually to ensure that our role actually works (for simplicity we will not uninstall java):
 
 ```sh
 sudo rm -r /vol/permanent/* # in order to reset
-bibiplay -t additional
+bibiplay -t resfinder # bibiplay is a short-form for roughly "ansible-playbook path-to-site.yaml -i path-to-ansible-hosts"
 ```
 
 Taking a look at `/vol/permanent/`, we can see that the `output` folder has been generated once again.
@@ -438,4 +433,4 @@ You can learn more about Ansible here:
 . [Ansible Galaxy](https://galaxy.ansible.com/ui/)
 
 # For future issues
--biBiGrid issues can be opened [here](https://github.com/BiBiServ/bibigrid/issues). Feel free to contact us for support as well.
+- BiBiGrid issues can be opened [here](https://github.com/BiBiServ/bibigrid/issues). Feel free to contact us for support as well.
