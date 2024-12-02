@@ -19,7 +19,6 @@
     volumes:
       - name: resFinder
         mountPoint: /vol/permanent
-        type: CEPH_NVME
         permanent: True
         size: 25
 
@@ -30,7 +29,6 @@
       count: 2
       volumes:
         - mountPoint: /vol/semiPermanent
-          type: CEPH_NVME
           semiPermanent: True
           size: 25
 

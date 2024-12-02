@@ -218,7 +218,7 @@ Run `./bibigrid.sh -i bibigrid.yaml -ch -v` to check your configuration. The com
 
 ## The Cluster
 ### Starting the cluster
-`./bibigrid.sh -i bibigrid.yaml -c -v` creates the cluster with a more verbose output. Cluster creation time 
+`./bibigrid.sh -i bibigrid.yaml -c -vv` creates the cluster with a verbose verbose output - great for us to see what's happening. Cluster creation time 
 depends on the chosen flavor and the overall load of the cloud and will take up to 15 minutes.
 
 ### List Running Cluster
