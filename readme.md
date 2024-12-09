@@ -15,7 +15,7 @@ based on the latest release of BiBiGrid
 ## Clone bibigrid and bibigrid_clum
 ```shell
 git clone https://github.com/BiBiServ/bibigrid.git
-git clone git@github.com:deNBI/bibigrid_clum.git
+git clone https://github.com/deNBI/bibigrid_clum.git
 ```
 
 Your bibigrid folder should contain:
