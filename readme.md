@@ -328,7 +328,7 @@ wget -qO- https://get.nextflow.io | bash
 ```
 
 #### Get and execute resFinder
-Execute locally in this repository's folder in order to copy our test workflow to the master (use your own key path and master ip)
+Execute locally in this repository's folder in order to copy our test workflow to the master; use your own key path (here `6jh83w0n3vsip90`) and master ip (here `123.45.67.890`)
 
 ```shell
 scp -i '~/.config/bibigrid/keys/tempKey_bibi-6jh83w0n3vsip90' resources/Resistance_Nextflow.tar.xz ubuntu@123.45.67.890:/vol/permanent/Resistance_Nextflow.tar.xz
