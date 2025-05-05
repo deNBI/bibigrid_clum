@@ -27,7 +27,7 @@ bibigrid  bibigrid_rest.sh  bibigrid.sh  bibigrid.yaml  documentation  README.md
 
 ## What will happen...
 
-The goal of this session is to set up a small HPC cluster consisting of 3 nodes (1 master, 2 workers) using BiBiGrid with [Slurm](https://slurm.schedmd.com/quickstart.html) (workload manager), [Network File System](https://linux.die.net/man/5/nfs) (allows file sharing between servers) and [Theia](https://theia-ide.org/docs/user_getting_started/) (Web IDE). This tutorial targets users running BiBiGrid on de.NBI cloud.
+The goal of this session is to set up a small HPC cluster consisting of 3 nodes (1 master, 2 [on demand](https://github.com/BiBiServ/bibigrid/blob/master/documentation/markdown/features/configuration.md#workerinstances) workers) using BiBiGrid with [Slurm](https://slurm.schedmd.com/quickstart.html) (workload manager), [Network File System](https://linux.die.net/man/5/nfs) (allows file sharing between servers) and [Theia](https://theia-ide.org/docs/user_getting_started/) (Web IDE). This tutorial targets users running BiBiGrid on de.NBI cloud.
 
 1. [Preparation](#preparation)
 2. [Configuration](#configuration)
@@ -131,11 +131,17 @@ The [sshUser](https://www.redhat.com/sysadmin/access-remote-systems-ssh) depends
 
 We have created a subnet for this workshop for you. Determine your subnet's `Name` by running:
 
-```
+```sh
 openstack subnet list --os-cloud=openstack
 ```
 
 Set the template's `subnet` key to the result's `Name` key.
+
+<details>
+<summary>How do I create a subnet for my own project?</summary>
+
+If you have your own project outside of this workshop and would like to create a subnet, take a look at the [OpenStack Quickstart from de.NBI Cloud Wiki](https://cloud.denbi.de/wiki/quickstart/#network-and-subnet). Depending on your cloud location, steps might slightly differ.
+</details>
 
 ### Instances
 
