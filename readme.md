@@ -277,7 +277,7 @@ cd /vol/spool
 ./nextflow run resFinder.nf -profile slurm
 ```
 
-The heatmap will be generated at `/vol/permanent/outputs/collected_heatmaps/`.
+The heatmap will be generated at `/vol/spool/outputs/collected_heatmaps/`.
 
 ## Terminate a cluster
 
@@ -288,9 +288,9 @@ back on your last created cluster if no cluster-id is specified.
 
 ### More BiBiGrid
 
-Congratulations! You have finished BiBiGrid's Hands-on.
+Congratulations! You have finished BiBiGrid's Two Hour Hands-on.
 
-You may want to take a look at the "real" `bibigrid.yaml` inside BiBiGrid's repository. It has a lot more options. However, everything you learned here stays true.
+You may want to take a look at the "real" `bibigrid.yaml` inside BiBiGrid's repository. It has a lot more options. However, everything you have learned here stays true.
 
 If you would like to deepen your knowledge maybe give BiBiGrid's [Features](https://gitlab.ub.uni-bielefeld.de/bibiserv/bibigrid/bibigrid2/-/blob/main/documentation/markdown/bibigrid_feature_list.md) or the [Software](https://gitlab.ub.uni-bielefeld.de/bibiserv/bibigrid/bibigrid2/-/blob/main/documentation/markdown/bibigrid_software_list.md) used by BiBiGrid a read. If you would like to know more about the configuration file see [Configuration](https://github.com/BiBiServ/bibigrid/blob/master/documentation/markdown/features/configuration.md).
 

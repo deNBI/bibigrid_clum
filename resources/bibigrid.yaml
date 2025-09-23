@@ -1,4 +1,4 @@
-# BiBiGrid's configuration file
+# BiBiGrid's Two Hour Hands On configuration file
 
 - infrastructure: openstack # # describes what cloud provider is used (others are not implemented yet)
   cloud: openstack # name of clouds.yaml entry (openstack for openstack if not changed)
@@ -16,11 +16,6 @@
   masterInstance:
     type: de.NBI medium
     image: # enter your image here
-    volumes:
-      - name: resFinder
-        mountPoint: /vol/permanent
-        permanent: True
-        size: 25
 
   # worker configuration
   workerInstances:
