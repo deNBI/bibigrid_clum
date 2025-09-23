@@ -268,7 +268,7 @@ BiBiGrid creates one partition for every cloud (here `openstack`) and one partit
 
 In this section, you will execute the `resFinder` [Nextflow](https://www.nextflow.io/) workflow to create a heatmap of antibiotic resistances using your cluster. This workflow has been downloaded by the ansible user role `resistance_nextflow` which was predefined in the `bibigrid.yaml` template. While we use Nextflow in this hands-on, you can use any workflow language that can execute on Slurm with BiBiGrid.
 
-### Ansible Let's execute our role
+### Ansible Let's Execute Our Role
 
 Execute the workflow:
 
