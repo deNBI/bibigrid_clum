@@ -46,3 +46,9 @@
   slurmConf:
     elastic_scheduling:
       SuspendTime: 32400
+
+  userRoles: # Ansible Role that installs nextflow and downloads the antibiotic resistance test workflow resFinder
+    - hosts:
+      - "master"
+      roles:
+      - name: "resistance_nextflow"

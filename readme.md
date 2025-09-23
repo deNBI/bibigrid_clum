@@ -1,7 +1,7 @@
-# Cloud User Meeting: BiBiGrid Hands-on
+# Cloud User Meeting: BiBiGrid Hands-on - Two Hour Version
 
 This tutorial is a reworked/optimized version of the Hands-on session of the **GCB 2019 in Heidelberg**
-based on the latest release of BiBiGrid
+based on the latest release of BiBiGrid. You can find the longer version [here](https://github.com/deNBI/bibigrid_clum).
 
 ## Prerequisites
 
@@ -225,35 +225,30 @@ Run `bibigrid check -i bibigrid.yaml -v` to check your configuration. The comman
 ## The Cluster
 ### Starting the cluster
 `bibigrid create -i bibigrid.yaml -vv` creates the cluster with a verbose verbose output - great for us to see what's happening. Cluster creation time 
-depends on the chosen flavor and the overall load of the cloud and will take up to 15 minutes.
+depends on the chosen flavor and the overall load of the cloud and will take up to 15 minutes. Create ends with a helpful output informing you on the follow up actions available.
 
-### List Running Cluster
+### List Running Clusters
 Since several clusters can run simultaneously in a single project, listing all running clusters can be useful:
 
 Execute `bibigrid list -i bibigrid.yaml`. You will receive a general overview of all clusters started in your project. You will see your cluster there, but also the clusters of other users in the same project.
 
-### Cluster SSH Connection
+### Using Theia Web IDE
 
-After a successful setup, BiBiGrid will print some information. For example:
+[Theia Web IDE's](https://www.theia-ide.org/) many features make it easier to work on your cloud instances. Take a look:
 
-```sh
-Cluster 6jh83w0n3vsip90 with master 123.45.67.890 up and running!
-SSH: ssh -i '~/.bibigrid/tempKey_bibi-6jh83w0n3vsip90' ubuntu@123.45.67.890
-Terminate cluster: bibigrid -i 'bibigrid.yaml' -t -cid 6jh83w0n3vsip90
-Detailed cluster info: bibigrid -i 'bibigrid.yaml' -l -cid 6jh83w0n3vsip90
-```
+![Theia](images/theia.png)
 
-You can now establish an SSH connection to your cluster's master by executing the `SSH` line printed in your `create`'s 
-output: 
+
+When enabled, Theia Web IDE is configured to listen on localhost port 8181 on the master instance. Since this address 
+is not directly available, you have to forward it to your machine using ssh. However, BiBiGrid handles that for you. Simply execute 
+
 ```shell
-ssh -i '~/.bibigrid/keys/tempKey_bibi-[cluster-id]' ubuntu@[floating_ip]
+bibigrid ide -i bibigrid.yaml
 ```
-But make sure to use the one generated for you by BiBiGrid since 
 
-- key path containing your cluster_id (`~/.bibigrid/keys/tempKey_bibi-[cluster-id]`)
-- username and floating ip (`ubuntu@[floating_ip]`)
+to connect to Theia. A Theia IDE tab will automatically open in your browser. You could have set `-cid [cluster-id]`. However, if no `-cid` is given, BiBiGrid will attempt to connect to your last created cluster which should be the cluster you just created.
 
-will differ on your run. Run `sinfo` after logging in. You should see something like this:
+Run `sinfo` on Theia's terminal. You should see something like this:
 
 ```sh
 PARTITION AVAIL  TIMELIMIT  NODES  STATE NODELIST
@@ -269,158 +264,20 @@ All*         up   infinite      1   idle bibigrid-master-6jh83w0n3vsip90
 BiBiGrid creates one partition for every cloud (here `openstack`) and one partition called `all` containing all nodes from all partitions. Since we are only using one cloud for this tutorial, we only have `openstack` and `all`.
 </details>
 
-However, dealing with the cluster from just a terminal can be quite bothersome. That's were Theia Web IDE comes in. Log out of your ssh connection for now.
-
-### Using Theia Web IDE
-
-[Theia Web IDE's](https://www.theia-ide.org/) many features make it easier to work on your cloud instances. Take a look:
-
-![Theia](images/theia.png)
-
-
-When enabled, Theia Web IDE is configured to listen on localhost port 8181 on the master instance. Since this address 
-is not directly available, you have to forward it to your machine using ssh. However, BiBiGrid handles that for you. Simply execute 
-
-```shell
-bibigrid ide -i bibigrid.yaml -cid [cluster-id]
-```
-
-to connect to Theia. A Theia IDE tab will automatically open in your browser. You could have omitted `-cid [cluster-id]`. If no `-cid` is given, BiBiGrid will attempt to connect to your last created cluster.
-
 ## Hello BiBiGrid, Hello Antibiotic Resistance!
 
-In this section, you will execute the `resFinder` workflow to create a heatmap of antibiotic resistances using your cluster. We will only focus on the workflow language [Nextflow](https://www.nextflow.io/) within this tutorial. However, you could use any software that comes with a SLURM executor instead or even run the jobs directly through SLURM's CLI.
+In this section, you will execute the `resFinder` [Nextflow](https://www.nextflow.io/) workflow to create a heatmap of antibiotic resistances using your cluster. This workflow has been downloaded by the ansible user role `resistance_nextflow` which was predefined in the `bibigrid.yaml` template. While we use Nextflow in this hands-on, you can use any workflow language that can execute on Slurm with BiBiGrid.
 
-<details>
-<summary>Digression: Job Scheduling (SLURM)</summary>
+### Ansible Let's execute our role
 
-[Slurm](https://slurm.schedmd.com/) is used for job scheduling/workload management. To see all nodes in your cluster execute `sinfo`. You will notice that workers are `idle~`. That means they are `idle` and `~` (powered down). Slurm uses many symbols and words to indicate node states. See [here](https://slurm.schedmd.com/sinfo.html#SECTION_NODE-STATE-CODES) for more about that. To see all running jobs, execute `squeue`. You will notice that no job is currently running.
-
-After successfully connecting to Theia IDE, we will now run our first job on our cluster. Let's start with a "hello world".
-
-- Open a terminal
-
-- Create a new shell script `nano /vol/spool/helloworld.sh`:
+Execute the workflow:
 
 ```shell
-#!/bin/bash
-echo Hello from $(hostname) !
-sleep 10
-```
-
-- Make `helloworld.sh` executable using [chmod](https://linux.die.net/man/1/chmod): `chmod u+x /vol/spool/helloworld.sh`
-- Change into the /vol/spool/ directory: `cd /vol/spool/`
-- Submit this script as an array job 50 times : `sbatch --array=1-50 --job-name=helloworld helloworld.sh` (run the job 50 times). The job `helloworld` runs now. It will take a while to finish, but you can already inspect some information while it runs.
-- The master will now power up worker nodes (as you described it in `bibigrid.yaml`) to assist him with this job. Execute `sinfo` after a few seconds to see the current node status.
-- View information about all scheduled jobs by executing `squeue`. You will see your job `helloworld` there.
-- You can see `helloworld`'s output using [cat](https://linux.die.net/man/1/cat) `cat /vol/spool/slurm-*.out`.
-</details>
-
-### Setting up Nextflow
-
-#### Install Java
-
-```shell
-sudo apt install default-jre
-```
-
-#### Download Nextflow To /vol/permanent
-
-```shell
-cd /vol/permanent
-wget -qO- https://get.nextflow.io | bash
-```
-
-#### Get and execute resFinder
-Execute locally in this repository's folder in order to copy our test workflow to the master; use your own key path (here `6jh83w0n3vsip90`) and master ip (here `123.45.67.890`)
-
-```shell
-scp -i '~/.config/bibigrid/keys/tempKey_bibi-[cluster-id]' resources/Resistance_Nextflow.tar.xz ubuntu@123.45.67.890:/vol/permanent/Resistance_Nextflow.tar.xz
-```
-
-Execute on remote within `/vol/permanent` in order to unpack our workflow and run it on the master.
-
-```shell
-tar -xvf Resistance_Nextflow.tar.xz
-./nextflow run resFinder.nf
-```
-
-Using `squeue` in another terminal will show you that this execution is not running on our slurm cluster.
-
-##### On Slurm
-
-In order to run our workflow on our slurm cluster, we need to set the executor to slurm. We have done that using a profile definition (see `nextflow.config`).
-
-```shell
+cd /vol/spool
 ./nextflow run resFinder.nf -profile slurm
 ```
 
-Once our workflow has finished, we can see the generated heatmap in `outputs/collected_heatmaps/`.
-
-## Ansible - Let's Automate
-<!-- TODO: Rework for new structure -->
-
-[Ansible](https://docs.ansible.com), an open source community project by Red Hat, enables the idempotent setup of servers - installing software you need and so on. Knowing more about Ansible can be very helpful when handling clusters.
-
-Let's automate our setup using Ansible! We have already prepared most of it in our generel user_role example. To include the user role `resistance_nextflow` at `~/playbook/roles_user`. Open `~/playbook/site.yaml` and add `resistance_nextflow` to the `hosts: master` section:
-
-```yaml
-- become: 'yes'
-  hosts: master
-  roles:
-  - role: bibigrid
-    tags:
-    - bibigrid
-    - bibigrid-master
-  - role: resistance_nextflow
-    tags:
-    - resfinder
-    become: False
-  vars_files:
-  - vars/common_configuration.yaml
-  - vars/hosts.yaml
-```
-
-Next, we need to change our paths from `/vol/spool` but `/vol/permanent` given that we would like to store the workflow and its outputs on our permanent volume.
-
-```yaml
-- debug:
-    msg: 
-    - "Hello {{ ansible_user }}!"
-
-- name: Unarchive ZIP file from GitHub repository
-  unarchive:
-    src: "https://github.com/deNBI/bibigrid_clum/raw/main/resources/Resistance_Nextflow.tar.xz"
-    dest: "/vol/permanent/"
-    remote_src: yes
-
-- name: Install Java JRE on Debian/Ubuntu
-  become: True
-  apt:
-    name: default-jre  # Package name for Java JRE on Debian-based systems
-    state: present     # Ensure that the package is present, you can use "latest" as well
-
-- name: Get Nextflow
-  shell: wget -qO- https://get.nextflow.io | bash
-  args:
-    chdir: /vol/permanent/
-```
-
-And let's execute our role, but first we need to remove everything we have done manually to ensure that our role actually works (for simplicity we will not uninstall java):
-
-```sh
-sudo rm -r /vol/permanent/* # in order to reset
-bibiplay -t resfinder # bibiplay is a short-form for roughly "ansible-playbook path-to-site.yaml -i path-to-ansible-hosts"
-```
-
-And execute the workflow again:
-
-```shell
-cd /vol/permanent
-./nextflow run resFinder.nf -profile slurm
-```
-
-The heatmap has been generated at `/vol/permanent/outputs/collected_heatmaps/` again.
+The heatmap will be generated at `/vol/permanent/outputs/collected_heatmaps/`.
 
 ## Terminate a cluster
 
