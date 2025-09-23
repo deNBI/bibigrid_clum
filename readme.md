@@ -316,7 +316,7 @@ sleep 10
 - You can see `helloworld`'s output using [cat](https://linux.die.net/man/1/cat) `cat /vol/spool/slurm-*.out`.
 </details>
 
-### Setting up nextflow
+### Setting up Nextflow
 
 #### Install Java
 
@@ -324,7 +324,7 @@ sleep 10
 sudo apt install default-jre
 ```
 
-#### Download Nextflow into your /vol/permanent folder
+#### Download Nextflow To /vol/permanent
 
 ```shell
 cd /vol/permanent
@@ -413,7 +413,14 @@ sudo rm -r /vol/permanent/* # in order to reset
 bibiplay -t resfinder # bibiplay is a short-form for roughly "ansible-playbook path-to-site.yaml -i path-to-ansible-hosts"
 ```
 
-Taking a look at `/vol/permanent/`, we can see that the `output` folder has been generated once again.
+And execute the workflow again:
+
+```shell
+cd /vol/permanent
+./nextflow run resFinder.nf -profile slurm
+```
+
+The heatmap has been generated at `/vol/permanent/outputs/collected_heatmaps/` again.
 
 ## Terminate a cluster
 
