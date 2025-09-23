@@ -15,7 +15,7 @@ based on the latest release of BiBiGrid. You can find the longer version [here](
 ## Clone bibigrid and bibigrid_clum
 ```shell
 git clone https://github.com/BiBiServ/bibigrid.git
-git clone https://github.com/deNBI/bibigrid_clum.git
+git clone --branch 2h_version https://github.com/deNBI/bibigrid_clum.git
 ```
 
 Your bibigrid folder should contain:
