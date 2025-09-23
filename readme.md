@@ -76,7 +76,7 @@ cp ~/Downloads/clouds.yaml ~/.config/openstack/clouds.yaml
 ```
 
 <details>
-<summary>Why not store BiBiGrids clouds.yaml in openstack and avoid the extra copy?</summary>
+<summary>Why not store BiBiGrids clouds.yaml in /etc/openstack and avoid the extra copy?</summary>
 
 In the future BiBiGrid will support more than just one cloud infrastructure. Therefore, using the `~/.config/openstack` folder would be a disadvantage later.
 </details>
@@ -105,7 +105,9 @@ The virtual environment is only `sourced` in the terminal where you executed the
 
 Now let's move into the bibigrid folder (`cd bibigrid`). We will stay in the bibigrid folder and in the terminal that sourced the virtual environment unless explicitly mentioned otherwise.
 
-You will now install BiBiGrid as a package within your newly created virtual environment. If you haven't `sourced` your environment yet, please go [back](#sourcing-environments). Installing BiBiGrid as a package automatically installs all requirements:
+You will now install BiBiGrid as a package within your newly created virtual environment. If you haven't `sourced` your environment yet, please go [back](#sourcing-environments). 
+
+Installing BiBiGrid as a package automatically installs all requirements:
 
 `pip install -e .`
 
