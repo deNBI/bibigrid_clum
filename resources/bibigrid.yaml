@@ -8,9 +8,7 @@
   ide: True # theia web ide
 
   useMasterAsCompute: False # we don't use the master for our computation
-
-  nfsShares:
-    - /vol/permanent
+  useMasterWithPublicIp: False
 
   # master configuration
   masterInstance:
@@ -41,6 +39,10 @@
   slurmConf:
     elastic_scheduling:
       SuspendTime: 32400
+  
+  gateway:
+    ip: 129.70.51.215
+    portFunction: 30000 + oct4
 
   userRoles: # Ansible Role that installs nextflow and downloads the antibiotic resistance test workflow resFinder
     - hosts:
