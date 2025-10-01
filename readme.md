@@ -7,7 +7,7 @@ based on the latest release of BiBiGrid. You can find the longer version [here](
 
 - System base on Linux, OSX (tested) or Windows Subsystem for Linux (untested)
 - required software packages 
-  - Python >= 3.10
+  - Python >= 3.12
   - git (required)
   - openssh 
 - Openstack API access
