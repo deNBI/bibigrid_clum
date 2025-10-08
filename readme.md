@@ -7,7 +7,7 @@ based on the latest release of BiBiGrid
 
 - System base on Linux, OSX (tested) or Windows Subsystem for Linux (untested)
 - required software packages 
-  - Python >= 3.10
+  - Python >= 3.12
   - git (required)
   - openssh 
 - Openstack API access
@@ -105,7 +105,9 @@ The virtual environment is only `sourced` in the terminal where you executed the
 
 Now let's move into the bibigrid folder (`cd bibigrid`). We will stay in the bibigrid folder and in the terminal that sourced the virtual environment unless explicitly mentioned otherwise.
 
-You will now install BiBiGrid as a package within your newly created virtual environment. If you haven't `sourced` your environment yet, please go [back](#sourcing-environments). Installing BiBiGrid as a package automatically installs all requirements:
+You will now install BiBiGrid as a package within your newly created virtual environment. If you haven't `sourced` your environment yet, please go [back](#sourcing-environments). 
+
+Installing BiBiGrid as a package automatically installs all requirements:
 
 `pip install -e .`
 
@@ -225,14 +227,14 @@ Run `bibigrid check -i bibigrid.yaml -v` to check your configuration. The comman
 ## The Cluster
 ### Starting the cluster
 `bibigrid create -i bibigrid.yaml -vv` creates the cluster with a verbose verbose output - great for us to see what's happening. Cluster creation time 
-depends on the chosen flavor and the overall load of the cloud and will take up to 15 minutes.
+depends on the chosen flavor and the overall load of the cloud and will take up to 15 minutes. Create ends with a helpful output informing you on the available follow up actions.
 
-### List Running Cluster
+### List Running Clusters
 Since several clusters can run simultaneously in a single project, listing all running clusters can be useful:
 
 Execute `bibigrid list -i bibigrid.yaml`. You will receive a general overview of all clusters started in your project. You will see your cluster there, but also the clusters of other users in the same project.
 
-### Cluster SSH Connection
+### Cluster SSH Connection (optional)
 
 After a successful setup, BiBiGrid will print some information. For example:
 
